@@ -101,13 +101,16 @@ export function WorkoutPage() {
 
   if (!workoutId) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6">
-        <h1 className="text-lg font-semibold">Тренировка не найдена</h1>
-        <p className="mt-2 text-sm text-slate-600">
+      <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <h1 className="text-lg font-semibold text-[#202020]">Тренировка не найдена</h1>
+        <p className="mt-2 text-sm text-[#202020]/70">
           Проверьте ссылку или вернитесь к курсам.
         </p>
         <div className="mt-5">
-          <Link className="text-sm font-semibold text-slate-900 underline" to="/">
+          <Link
+            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
+            to="/"
+          >
             Перейти к курсам
           </Link>
         </div>
@@ -118,21 +121,24 @@ export function WorkoutPage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-40 animate-pulse rounded-3xl bg-slate-100" />
-        <div className="h-40 animate-pulse rounded-3xl bg-slate-100" />
+        <div className="h-40 animate-pulse rounded-[30px] bg-[#f7f7f7]" />
+        <div className="h-40 animate-pulse rounded-[30px] bg-[#f7f7f7]" />
       </div>
     )
   }
 
   if (error || !workout) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6">
-        <h1 className="text-lg font-semibold">Тренировка не найдена</h1>
-        <p className="mt-2 text-sm text-slate-600">
+      <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <h1 className="text-lg font-semibold text-[#202020]">Тренировка не найдена</h1>
+        <p className="mt-2 text-sm text-[#202020]/70">
           {error ?? 'Проверьте ссылку или вернитесь к курсам.'}
         </p>
         <div className="mt-5">
-          <Link className="text-sm font-semibold text-slate-900 underline" to="/">
+          <Link
+            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
+            to="/"
+          >
             Перейти к курсам
           </Link>
         </div>
@@ -149,17 +155,17 @@ export function WorkoutPage() {
   return (
     <div className="space-y-8">
       <section className="space-y-2">
-        <div className="text-xs font-medium text-slate-500">
+        <div className="text-xs font-medium text-[#202020]/60">
           {courseName ? <span>{courseName}</span> : 'Курс'} / Тренировка
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-[#202020] sm:text-[32px]">
           {workout.name}
         </h1>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <div className="aspect-video overflow-hidden rounded-3xl border border-slate-200 bg-black shadow-sm">
+          <div className="aspect-video overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-black shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
             <iframe
               className="h-full w-full"
               src={workout.video}
@@ -172,18 +178,18 @@ export function WorkoutPage() {
         </div>
 
         <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-semibold text-slate-900">Упражнения</div>
+          <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+            <div className="text-sm font-semibold text-[#202020]">Упражнения</div>
             <div className="mt-4 space-y-3">
               {workout.exercises.map((ex, idx) => (
                 <div
                   key={ex._id}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-[#f7f7f7] px-4 py-3"
                 >
-                  <div className="min-w-0 truncate text-sm font-medium text-slate-900">
+                  <div className="min-w-0 truncate text-sm font-medium text-[#202020]">
                     {idx + 1}. {ex.name}
                   </div>
-                  <div className="shrink-0 text-sm text-slate-500">
+                  <div className="shrink-0 text-sm text-[#202020]/70">
                     {progress[idx] ?? 0} / {ex.quantity}
                   </div>
                 </div>

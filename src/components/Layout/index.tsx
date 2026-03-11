@@ -6,7 +6,7 @@ import { ScrollToTopButton } from '../ScrollToTopButton'
 
 export function Layout() {
   return (
-    <div className="min-h-dvh bg-slate-50 text-slate-900">
+    <div className="min-h-dvh bg-[#fafafa] text-[#202020]">
       <Header />
       <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <Outlet />

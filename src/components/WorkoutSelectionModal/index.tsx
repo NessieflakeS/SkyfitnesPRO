@@ -49,14 +49,14 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white shadow-xl">
-        <div className="border-b border-slate-200 p-6">
-          <h2 className="pr-8 text-xl font-bold text-slate-900">Тренировки курса</h2>
-          <p className="mt-1 text-sm text-slate-600">{course.nameRU}</p>
+      <div className="relative w-full max-w-lg rounded-[30px] border border-[#D9D9D9] bg-white shadow-xl">
+        <div className="border-b border-[#D9D9D9] p-6">
+          <h2 className="pr-8 text-xl font-bold text-[#202020]">Тренировки курса</h2>
+          <p className="mt-1 text-sm text-[#202020]/70">{course.nameRU}</p>
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 text-2xl text-slate-400 hover:text-slate-600"
+            className="absolute right-4 top-4 text-2xl text-[#202020]/50 hover:text-[#202020]"
             aria-label="Закрыть"
           >
             &times;
@@ -67,7 +67,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           {loading ? (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-14 animate-pulse rounded-xl bg-slate-100" />
+                <div key={i} className="h-14 animate-pulse rounded-xl bg-[#f7f7f7]" />
               ))}
             </div>
           ) : (
@@ -80,11 +80,9 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
                       to={`/workouts/${workout._id}`}
                       state={{ courseId: course._id }}
                       onClick={onClose}
-                      className={cn(
-                        'flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-colors hover:bg-slate-50',
-                      )}
+                      className="flex items-center justify-between gap-3 rounded-2xl border border-[#D9D9D9] bg-white p-4 text-left shadow-sm transition-colors hover:bg-[#f7f7f7]"
                     >
-                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900">
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-[#202020]">
                         {workout.name}
                       </span>
                       <span
@@ -92,7 +90,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
                           'shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium',
                           completed
                             ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-slate-100 text-slate-600',
+                            : 'bg-[#f7f7f7] text-[#202020]/70',
                         )}
                       >
                         {completed ? 'Завершена' : 'Доступна'}
@@ -105,7 +103,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           )}
         </div>
 
-        <div className="border-t border-slate-200 p-6">
+        <div className="border-t border-[#D9D9D9] p-6">
           <Button variant="secondary" fullWidth onClick={onClose}>
             Закрыть
           </Button>

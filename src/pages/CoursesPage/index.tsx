@@ -28,22 +28,18 @@ export function CoursesPage() {
   }, [])
 
   return (
-    <div className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div className="grid gap-6 p-6 sm:grid-cols-2 sm:items-center sm:p-10">
-          <div className="space-y-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              Курсы тренировок
-            </h1>
-            <p className="text-sm leading-6 text-slate-600">
-              Выберите курс, занимайтесь дома и отслеживайте прогресс.
-            </p>
-          </div>
-          <div className="rounded-3xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 p-6 text-white sm:p-8">
-            <div className="text-sm/6 opacity-90">Подборка недели</div>
-            <div className="mt-2 text-xl font-semibold">Йога + Стретчинг</div>
-            <div className="mt-2 text-sm/6 opacity-90">Для восстановления и гибкости</div>
-          </div>
+    <div className="space-y-10">
+      <section className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="max-w-[947px] text-[40px] font-medium leading-none text-black sm:text-[60px]">
+          Начните заниматься спортом
+          <br />и улучшите качество жизни
+        </h1>
+        <div className="shrink-0 rounded-md bg-[#BCEC30] px-5 py-4">
+          <p className="text-[24px] font-normal leading-tight text-[#202020] sm:text-[32px]">
+            Измени своё
+            <br />
+            тело за полгода!
+          </p>
         </div>
       </section>
 
@@ -53,7 +49,7 @@ export function CoursesPage() {
         </div>
       )}
 
-      <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {courses
           ? courses.map((course) => (
               <CourseCard key={course._id} course={mapApiCourseToCourse(course)} />

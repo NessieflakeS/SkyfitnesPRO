@@ -77,15 +77,15 @@ export function AuthPage() {
 
   return (
     <div className="mx-auto w-full max-w-lg">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 p-6">
-          <h1 className="text-xl font-bold text-slate-900">{title}</h1>
-          <p className="mt-2 text-sm text-slate-600">
+      <div className="overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <div className="border-b border-[#D9D9D9] p-6">
+          <h1 className="text-xl font-bold text-[#202020]">{title}</h1>
+          <p className="mt-2 text-sm text-[#202020]/70">
             Используется реальное API. Требования к паролю: минимум 6 символов, минимум 2
             спецсимвола и минимум 1 заглавная буква.
           </p>
 
-          <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
+          <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-[#f7f7f7] p-1">
             <button
               type="button"
               onClick={() => {
@@ -94,8 +94,10 @@ export function AuthPage() {
                 setLocalError(null)
               }}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
-                mode === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600',
+                'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+                mode === 'login'
+                  ? 'bg-white text-[#202020] shadow-sm'
+                  : 'text-[#202020]/70',
               )}
             >
               Войти
@@ -108,10 +110,10 @@ export function AuthPage() {
                 setLocalError(null)
               }}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
+                'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
                 mode === 'register'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600',
+                  ? 'bg-white text-[#202020] shadow-sm'
+                  : 'text-[#202020]/70',
               )}
             >
               Регистрация
@@ -128,7 +130,7 @@ export function AuthPage() {
         >
           <div className="space-y-2">
             <label
-              className="text-sm font-medium text-slate-700"
+              className="text-sm font-medium text-[#202020]"
               htmlFor={`${formId}-email`}
             >
               Email
@@ -137,7 +139,7 @@ export function AuthPage() {
               id={`${formId}-email`}
               type="email"
               placeholder="user@example.com"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
+              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
@@ -145,7 +147,7 @@ export function AuthPage() {
 
           <div className="space-y-2">
             <label
-              className="text-sm font-medium text-slate-700"
+              className="text-sm font-medium text-[#202020]"
               htmlFor={`${formId}-password`}
             >
               Пароль
@@ -154,14 +156,14 @@ export function AuthPage() {
               id={`${formId}-password`}
               type="password"
               placeholder="••••••••"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
+              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
           </div>
 
           {mode === 'register' && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
+            <div className="rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] p-4 text-xs text-[#202020]/80">
               Пароль: не менее 6 символов, не менее двух спецсимволов и не менее одной
               заглавной буквы.
             </div>
@@ -177,7 +179,7 @@ export function AuthPage() {
             {isLoading ? 'Подождите…' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
           </Button>
 
-          <div className="text-center text-xs text-slate-500">
+          <div className="text-center text-xs text-[#202020]/60">
             Нажимая кнопку, вы соглашаетесь с условиями сервиса.
           </div>
         </form>

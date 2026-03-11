@@ -81,14 +81,14 @@ export function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white shadow-xl">
-        <div className="border-b border-slate-200 p-6">
-          <h2 className="text-xl font-bold text-slate-900">
+      <div className="relative w-full max-w-lg rounded-[30px] border border-[#D9D9D9] bg-white shadow-xl">
+        <div className="border-b border-[#D9D9D9] p-6">
+          <h2 className="text-xl font-bold text-[#202020]">
             {mode === 'login' ? 'Вход' : 'Регистрация'}
           </h2>
           <button
             onClick={closeAuthModal}
-            className="absolute right-4 top-4 text-2xl text-slate-400 hover:text-slate-600"
+            className="absolute right-4 top-4 text-2xl text-[#202020]/50 hover:text-[#202020]"
           >
             &times;
           </button>
@@ -101,13 +101,15 @@ export function AuthModal() {
           }}
           className="space-y-4 p-6"
         >
-          <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
+          <div className="grid grid-cols-2 gap-2 rounded-2xl bg-[#f7f7f7] p-1">
             <button
               type="button"
               onClick={() => handleModeSwitch('login')}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
-                mode === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600',
+                'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+                mode === 'login'
+                  ? 'bg-white text-[#202020] shadow-sm'
+                  : 'text-[#202020]/70',
               )}
             >
               Войти
@@ -116,10 +118,10 @@ export function AuthModal() {
               type="button"
               onClick={() => handleModeSwitch('register')}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
+                'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
                 mode === 'register'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600',
+                  ? 'bg-white text-[#202020] shadow-sm'
+                  : 'text-[#202020]/70',
               )}
             >
               Регистрация
@@ -128,7 +130,7 @@ export function AuthModal() {
 
           <div className="space-y-2">
             <label
-              className="text-sm font-medium text-slate-700"
+              className="text-sm font-medium text-[#202020]"
               htmlFor={`${formId}-email`}
             >
               Email
@@ -137,7 +139,7 @@ export function AuthModal() {
               id={`${formId}-email`}
               type="email"
               placeholder="user@example.com"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
+              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -145,7 +147,7 @@ export function AuthModal() {
 
           <div className="space-y-2">
             <label
-              className="text-sm font-medium text-slate-700"
+              className="text-sm font-medium text-[#202020]"
               htmlFor={`${formId}-password`}
             >
               Пароль
@@ -154,14 +156,14 @@ export function AuthModal() {
               id={`${formId}-password`}
               type="password"
               placeholder="••••••••"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
+              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
           {mode === 'register' && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
+            <div className="rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] p-4 text-xs text-[#202020]/80">
               Пароль: не менее 6 символов, не менее двух спецсимволов и не менее одной
               заглавной буквы.
             </div>

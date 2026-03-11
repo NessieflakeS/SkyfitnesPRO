@@ -47,13 +47,13 @@ export function ProgressModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white shadow-xl">
-        <div className="border-b border-slate-200 p-6">
-          <h2 className="pr-8 text-xl font-bold text-slate-900">Заполнить прогресс</h2>
+      <div className="relative w-full max-w-lg rounded-[30px] border border-[#D9D9D9] bg-white shadow-xl">
+        <div className="border-b border-[#D9D9D9] p-6">
+          <h2 className="pr-8 text-xl font-bold text-[#202020]">Заполнить прогресс</h2>
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 text-2xl text-slate-400 hover:text-slate-600"
+            className="absolute right-4 top-4 text-2xl text-[#202020]/50 hover:text-[#202020]"
             aria-label="Закрыть"
           >
             &times;
@@ -62,7 +62,7 @@ export function ProgressModal({
 
         {noCourseId ? (
           <div className="p-6">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-[#202020]/80">
               Чтобы сохранять прогресс, откройте тренировку из раздела «Профиль» (Выбрать
               тренировку).
             </p>
@@ -72,7 +72,7 @@ export function ProgressModal({
           </div>
         ) : exercises.length === 0 ? (
           <div className="p-6">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-[#202020]/80">
               В этой тренировке нет упражнений с повторениями. Прогресс не требуется.
             </p>
             <Button className="mt-4" fullWidth onClick={onClose}>
@@ -91,11 +91,11 @@ export function ProgressModal({
               {exercises.map((ex, idx) => (
                 <div
                   key={ex._id}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3"
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-[#f7f7f7] px-4 py-3"
                 >
                   <label
                     htmlFor={`progress-${ex._id}`}
-                    className="min-w-0 flex-1 truncate text-sm font-medium text-slate-900"
+                    className="min-w-0 flex-1 truncate text-sm font-medium text-[#202020]"
                   >
                     {idx + 1}. {ex.name}
                   </label>
@@ -103,7 +103,7 @@ export function ProgressModal({
                     id={`progress-${ex._id}`}
                     type="number"
                     min={0}
-                    className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1 text-right text-sm"
+                    className="w-16 rounded-lg border border-[#D9D9D9] bg-white px-2 py-1 text-right text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
                     value={progress[idx] ?? 0}
                     onChange={(e) => handleChange(idx, e.target.value)}
                   />

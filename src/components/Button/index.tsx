@@ -12,9 +12,11 @@ type Props = PropsWithChildren<
 >
 
 const variantClass: Record<Variant, string> = {
-  primary: 'bg-slate-900 text-white hover:bg-slate-800',
-  secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200',
-  ghost: 'bg-transparent text-slate-900 hover:bg-slate-100',
+  primary:
+    'bg-[#BCEC30] text-black hover:bg-[#99D100] rounded-[46px] px-6 py-4 text-[18px] font-normal',
+  secondary:
+    'bg-[#f7f7f7] text-[#202020] hover:bg-[#e5e5e5] rounded-[46px] px-6 py-4 text-[18px] font-normal',
+  ghost: 'bg-transparent text-[#202020] hover:bg-[#f7f7f7] rounded-xl px-4 py-2 text-sm',
 }
 
 export function Button({
@@ -29,7 +31,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex items-center justify-center gap-2 transition-colors disabled:pointer-events-none disabled:opacity-50',
         variantClass[variant],
         fullWidth && 'w-full',
         className,

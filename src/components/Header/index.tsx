@@ -31,15 +31,17 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-[#D9D9D9] bg-white/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
         <NavLink to="/" className="flex items-center gap-2">
           <div className="grid size-9 place-items-center rounded-xl bg-slate-900 text-white">
             SF
           </div>
           <div className="leading-tight">
-            <div className="text-sm font-semibold">SkyFitnessPro</div>
-            <div className="text-xs text-slate-500">тренировки онлайн</div>
+            <div className="text-sm font-semibold text-black">SkyFitnessPro</div>
+            <div className="text-[18px] text-black/50">
+              Онлайн-тренировки для занятий дома
+            </div>
           </div>
         </NavLink>
 
@@ -50,8 +52,8 @@ export function Header() {
               cn(
                 linkBase,
                 isActive
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100',
+                  ? 'bg-[#BCEC30] text-black'
+                  : 'text-[#202020] hover:bg-[#f7f7f7]',
               )
             }
             end
@@ -64,8 +66,8 @@ export function Header() {
               cn(
                 linkBase,
                 isActive
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100',
+                  ? 'bg-[#BCEC30] text-black'
+                  : 'text-[#202020] hover:bg-[#f7f7f7]',
               )
             }
           >
@@ -78,8 +80,8 @@ export function Header() {
                 onClick={() => setMenuOpen((v) => !v)}
                 className={cn(
                   linkBase,
-                  'text-slate-700 hover:bg-slate-100',
-                  menuOpen && 'bg-slate-100',
+                  'text-[#202020] hover:bg-[#f7f7f7]',
+                  menuOpen && 'bg-[#f7f7f7]',
                 )}
                 aria-expanded={menuOpen}
                 aria-haspopup="true"
@@ -94,17 +96,17 @@ export function Header() {
                 </span>
               </button>
               {menuOpen && (
-                <div className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                <div className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-[#D9D9D9] bg-white py-1 shadow-lg">
                   <NavLink
                     to="/profile"
-                    className="block px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    className="block px-4 py-2 text-left text-sm text-[#202020] hover:bg-[#f7f7f7]"
                     onClick={() => setMenuOpen(false)}
                   >
                     Профиль
                   </NavLink>
                   <button
                     type="button"
-                    className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    className="block w-full px-4 py-2 text-left text-sm text-[#202020] hover:bg-[#f7f7f7]"
                     onClick={handleLogout}
                   >
                     Выйти
@@ -117,10 +119,10 @@ export function Header() {
               to="/auth"
               className={({ isActive }) =>
                 cn(
-                  linkBase,
+                  'inline-flex items-center rounded-[46px] px-6 py-4 text-[18px] font-normal transition-colors',
                   isActive
-                    ? 'bg-slate-900 text-white'
-                    : 'text-slate-700 hover:bg-slate-100',
+                    ? 'bg-[#BCEC30] text-black'
+                    : 'bg-[#BCEC30] text-black hover:bg-[#99D100]',
                 )
               }
             >

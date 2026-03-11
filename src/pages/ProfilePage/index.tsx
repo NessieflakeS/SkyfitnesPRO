@@ -84,19 +84,19 @@ export function ProfilePage() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+      <section className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:p-10">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Профиль</h1>
-            <div className="text-sm text-slate-600">{user.email}</div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#202020]">Профиль</h1>
+            <div className="text-sm text-[#202020]/70">{user.email}</div>
           </div>
         </div>
       </section>
 
       <section className="space-y-4">
         <div className="flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Мои курсы</h2>
-          <div className="text-xs text-slate-500">
+          <h2 className="text-lg font-semibold text-[#202020]">Мои курсы</h2>
+          <div className="text-xs text-[#202020]/60">
             {loading ? 'Загрузка…' : `${String(courses.length)} шт.`}
           </div>
         </div>
@@ -112,7 +112,7 @@ export function ProfilePage() {
             Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={index}
-                className="h-48 animate-pulse rounded-2xl border border-slate-200 bg-slate-100"
+                className="h-48 animate-pulse rounded-[30px] border border-[#D9D9D9] bg-[#f7f7f7]"
               />
             ))}
 
@@ -120,7 +120,7 @@ export function ProfilePage() {
             courses.map((course) => (
               <article
                 key={course._id}
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                className="overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]"
               >
                 <div
                   className="h-24 bg-gradient-to-br from-slate-900 to-indigo-700"
@@ -128,7 +128,7 @@ export function ProfilePage() {
                 />
                 <div className="space-y-3 p-5">
                   <div
-                    className="cursor-pointer text-sm font-semibold text-slate-900"
+                    className="cursor-pointer text-sm font-semibold text-[#202020]"
                     onClick={() => setWorkoutModalCourse(course)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -141,7 +141,7 @@ export function ProfilePage() {
                   >
                     {course.nameRU}
                   </div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-xs text-[#202020]/60">
                     Тренировок: {course.workouts.length}
                   </div>
 

@@ -52,13 +52,16 @@ export function CoursePage() {
 
   if (!courseId) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6">
-        <h1 className="text-lg font-semibold">Курс не найден</h1>
-        <p className="mt-2 text-sm text-slate-600">
+      <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <h1 className="text-lg font-semibold text-[#202020]">Курс не найден</h1>
+        <p className="mt-2 text-sm text-[#202020]/70">
           Возможно, ссылка устарела. Вернитесь к списку курсов.
         </p>
         <div className="mt-5">
-          <Link className="text-sm font-semibold text-slate-900 underline" to="/">
+          <Link
+            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
+            to="/"
+          >
             Перейти к курсам
           </Link>
         </div>
@@ -92,21 +95,24 @@ export function CoursePage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <div className="h-40 animate-pulse rounded-3xl bg-slate-100" />
-        <div className="h-40 animate-pulse rounded-3xl bg-slate-100" />
+        <div className="h-40 animate-pulse rounded-[30px] bg-[#f7f7f7]" />
+        <div className="h-40 animate-pulse rounded-[30px] bg-[#f7f7f7]" />
       </div>
     )
   }
 
   if (error || !course || !mapped) {
     return (
-      <div className="rounded-3xl border border-slate-200 bg-white p-6">
-        <h1 className="text-lg font-semibold">Курс не найден</h1>
-        <p className="mt-2 text-sm text-slate-600">
+      <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <h1 className="text-lg font-semibold text-[#202020]">Курс не найден</h1>
+        <p className="mt-2 text-sm text-[#202020]/70">
           {error ?? 'Возможно, ссылка устарела. Вернитесь к списку курсов.'}
         </p>
         <div className="mt-5">
-          <Link className="text-sm font-semibold text-slate-900 underline" to="/">
+          <Link
+            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
+            to="/"
+          >
             Перейти к курсам
           </Link>
         </div>
@@ -116,20 +122,27 @@ export function CoursePage() {
 
   return (
     <div className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
+      <section className="overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
         <div className={`h-36 bg-gradient-to-br ${mapped.coverColor}`} aria-hidden />
         <div className="space-y-5 p-6 sm:p-10">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-[#202020] sm:text-[32px]">
               {mapped.title}
             </h1>
-            <div className="text-sm text-slate-600">
-              {getCourseLevelLabel(mapped.level)} • {mapped.durationDays} дней •{' '}
-              {mapped.dailyMinutesFrom}-{mapped.dailyMinutesTo} мин/день
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-full bg-[#f7f7f7] px-[10px] py-2 text-sm text-[#202020]">
+                {getCourseLevelLabel(mapped.level)}
+              </span>
+              <span className="rounded-full bg-[#f7f7f7] px-[10px] py-2 text-sm text-[#202020]">
+                {mapped.durationDays} дней
+              </span>
+              <span className="rounded-full bg-[#f7f7f7] px-[10px] py-2 text-sm text-[#202020]">
+                {mapped.dailyMinutesFrom}-{mapped.dailyMinutesTo} мин/день
+              </span>
             </div>
           </div>
 
-          <p className="max-w-3xl text-sm leading-6 text-slate-700">
+          <p className="max-w-3xl text-sm leading-6 text-[#202020]/90">
             {mapped.description}
           </p>
 
@@ -137,7 +150,7 @@ export function CoursePage() {
             {mapped.fitting.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
+                className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-medium text-[#202020]"
               >
                 {tag}
               </span>
@@ -170,15 +183,15 @@ export function CoursePage() {
           )}
 
           {status !== 'authenticated' && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+            <div className="rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] p-4 text-sm text-[#202020]">
               <div className="font-semibold">Для добавления курса нужно войти</div>
-              <div className="mt-1 text-slate-600">
+              <div className="mt-1 text-[#202020]/80">
                 Авторизуйтесь, чтобы сохранить курс в своём профиле и отслеживать
                 прогресс.
               </div>
               <div className="mt-3">
                 <Link
-                  className="text-sm font-semibold text-slate-900 underline"
+                  className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
                   to="/auth"
                 >
                   Перейти к авторизации
@@ -191,8 +204,8 @@ export function CoursePage() {
 
       <section className="space-y-4">
         <div className="flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Тренировки курса</h2>
-          <div className="text-xs text-slate-500">{workouts.length} шт.</div>
+          <h2 className="text-lg font-semibold text-[#202020]">Тренировки курса</h2>
+          <div className="text-xs text-[#202020]/60">{workouts.length} шт.</div>
         </div>
 
         <div className="grid gap-3">
@@ -201,14 +214,14 @@ export function CoursePage() {
               key={workout._id}
               to={`/workouts/${workout._id}`}
               state={courseId ? { courseId } : undefined}
-              className="group flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:bg-slate-50"
+              className="group flex items-center justify-between gap-4 rounded-[30px] border border-[#D9D9D9] bg-white p-5 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-colors hover:bg-[#fafafa]"
             >
               <div className="min-w-0">
-                <div className="truncate text-sm font-semibold text-slate-900">
+                <div className="truncate text-sm font-semibold text-[#202020]">
                   {workout.name}
                 </div>
               </div>
-              <div className="shrink-0 text-sm font-semibold text-slate-900">→</div>
+              <div className="shrink-0 text-sm font-semibold text-[#202020]">→</div>
             </Link>
           ))}
         </div>

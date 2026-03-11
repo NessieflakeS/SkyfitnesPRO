@@ -2,18 +2,18 @@ import { Link } from 'react-router-dom'
 
 export function NotFoundPage() {
   return (
-    <div className="mx-auto max-w-xl rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm sm:p-12">
-      <div className="text-6xl font-bold tracking-tight text-slate-900">404</div>
-      <div className="mt-3 text-base font-semibold text-slate-900">
+    <div className="mx-auto max-w-xl rounded-[30px] border border-[#D9D9D9] bg-white p-8 text-center shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:p-12">
+      <div className="text-6xl font-bold tracking-tight text-[#202020]">404</div>
+      <div className="mt-3 text-base font-semibold text-[#202020]">
         Страница не найдена
       </div>
-      <p className="mt-2 text-sm text-slate-600">
+      <p className="mt-2 text-sm text-[#202020]/70">
         Такой страницы нет. Вернитесь к списку курсов.
       </p>
       <div className="mt-6">
         <Link
           to="/"
-          className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+          className="inline-flex items-center justify-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black transition-colors hover:bg-[#99D100]"
         >
           На главную
         </Link>
