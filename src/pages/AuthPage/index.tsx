@@ -70,9 +70,7 @@ export function AuthPage() {
       }
 
       void navigate('/', { replace: true })
-    } catch {
-      // lastError задаётся в контексте
-    }
+    } catch {}
   }
 
   return (

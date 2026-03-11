@@ -111,9 +111,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => openAuthModal()}
-              className={cn(
-                'inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-2.5 text-base font-normal text-black transition-colors hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]',
-              )}
+              className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-2.5 text-base font-normal text-black transition-colors hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]"
             >
               Войти
             </button>

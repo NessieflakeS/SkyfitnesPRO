@@ -18,7 +18,6 @@ export function readStoredAuth(): StoredAuth | null {
       return { token: (parsed as { token: string }).token }
     }
   } catch {
-    // ignore
   }
   return null
 }
@@ -31,6 +30,5 @@ export function writeStoredAuth(data: StoredAuth | null) {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
     }
   } catch {
-    // ignore
   }
 }

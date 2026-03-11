@@ -67,9 +67,7 @@ export function ProfilePage() {
         try {
           const p = await fetchCourseProgress(course._id, token)
           if (!cancelled) next[course._id] = p
-        } catch {
-          // ignore per-course errors
-        }
+        } catch {}
       }
       if (!cancelled) setProgressMap((prev) => ({ ...prev, ...next }))
     }

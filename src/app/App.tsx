@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import { BrowserRouter } from 'react-router-dom'
 
 import { AuthModal } from '../components/AuthModal'
