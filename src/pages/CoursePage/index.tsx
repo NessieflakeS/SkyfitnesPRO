@@ -12,11 +12,13 @@ import {
 import { useAuth } from '../../shared/auth/AuthContext'
 import { mapApiCourseToCourse } from '../../shared/mappers/courseMapper'
 import { getCourseLevelLabel } from '../../shared/mock/courses'
+import { useModal } from '../../shared/ui/ModalContext'
 
 export function CoursePage() {
   const { courseId } = useParams()
   const navigate = useNavigate()
   const { status, user, token } = useAuth()
+  const { openAuthModal } = useModal()
 
   const [course, setCourse] = useState<ApiCourse | null>(null)
   const [workouts, setWorkouts] = useState<ApiWorkoutShort[]>([])
@@ -32,23 +34,30 @@ export function CoursePage() {
     setLoading(true)
     setError(null)
 
-    void Promise.all([fetchCourse(courseId), fetchCourseWorkouts(courseId)])
-      .then(([courseData, workoutsData]) => {
+    void fetchCourse(courseId, token)
+      .then((courseData) => {
         if (cancelled) return
         setCourse(courseData)
+        return fetchCourseWorkouts(courseId, token)
+          .then((w) => w ?? [])
+          .catch(() => [] as ApiWorkoutShort[])
+      })
+      .then((workoutsData) => {
+        if (cancelled) return
         setWorkouts(workoutsData)
-        setLoading(false)
       })
       .catch(() => {
         if (cancelled) return
         setError('Не удалось загрузить курс')
-        setLoading(false)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
       })
 
     return () => {
       cancelled = true
     }
-  }, [courseId])
+  }, [courseId, token])
 
   if (!courseId) {
     return (
@@ -72,13 +81,14 @@ export function CoursePage() {
   }
 
   const mapped = course ? mapApiCourseToCourse(course) : null
-  const isOwned = !!user && !!course && user.selectedCourses.includes(course._id)
+  const isOwned =
+    !!user && !!course && Array.isArray(user.selectedCourses) && user.selectedCourses.includes(course._id)
 
   const handleAddCourse = async () => {
     setAddError(null)
 
     if (status !== 'authenticated' || !token) {
-      void navigate('/auth', { state: { from: `/courses/${courseId}` } })
+      openAuthModal(courseId ?? undefined)
       return
     }
 
@@ -194,12 +204,9 @@ export function CoursePage() {
                 прогресс.
               </div>
               <div className="mt-3">
-                <Link
-                  className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]"
-                  to="/auth"
-                >
-                  Перейти к авторизации
-                </Link>
+                <Button onClick={() => openAuthModal(courseId ?? undefined)}>
+                  Войти или зарегистрироваться
+                </Button>
               </div>
             </div>
           )}
@@ -214,6 +221,11 @@ export function CoursePage() {
           <div className="text-xs text-[#202020]/60">{workouts.length} шт.</div>
         </div>
 
+        {workouts.length === 0 && !token && (
+          <p className="rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] px-4 py-3 text-sm text-[#202020]/80">
+            Войдите в аккаунт, чтобы видеть список тренировок.
+          </p>
+        )}
         <div className="grid gap-2 sm:gap-3">
           {workouts.map((workout) => (
             <Link

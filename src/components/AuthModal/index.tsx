@@ -11,7 +11,7 @@ type Mode = 'login' | 'register'
 export function AuthModal() {
   const formId = useId()
   const { isAuthModalOpen, closeAuthModal, pendingCourseId } = useModal()
-  const { clearError, lastError, login, register, status, token } = useAuth()
+  const { clearError, lastError, login, register, status } = useAuth()
 
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
@@ -58,15 +58,14 @@ export function AuthModal() {
     }
 
     try {
-      if (mode === 'login') {
-        await login(trimmedEmail, trimmedPassword)
-      } else {
-        await register(trimmedEmail, trimmedPassword)
-      }
+      const newToken =
+        mode === 'login'
+          ? await login(trimmedEmail, trimmedPassword)
+          : await register(trimmedEmail, trimmedPassword)
 
-      if (pendingCourseId && token) {
+      if (pendingCourseId && newToken) {
         try {
-          await addCourseForUser(pendingCourseId, token)
+          await addCourseForUser(pendingCourseId, newToken)
         } catch {
           setLocalError('Курс не был добавлен. Попробуйте ещё раз.')
           return
@@ -80,17 +79,27 @@ export function AuthModal() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-      <div className="relative w-full max-h-[90vh] max-w-lg overflow-y-auto rounded-t-2xl border border-[#D9D9D9] bg-white shadow-xl sm:max-h-none sm:rounded-[30px]">
-        <div className="border-b border-[#D9D9D9] p-4 sm:p-6">
-          <h2 className="pr-8 text-lg font-bold text-[#202020] sm:text-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+    >
+      <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <div className="border-b border-[#D9D9D9] p-5 sm:p-6">
+          <h2
+            id="auth-modal-title"
+            className="pr-10 text-xl font-medium text-[#202020]"
+          >
             {mode === 'login' ? 'Вход' : 'Регистрация'}
           </h2>
           <button
+            type="button"
             onClick={closeAuthModal}
-            className="absolute right-4 top-4 text-2xl text-[#202020]/50 hover:text-[#202020]"
+            className="absolute right-4 top-4 text-[#202020]/50 hover:text-[#202020]"
+            aria-label="Закрыть"
           >
-            &times;
+            <span className="text-2xl leading-none">&times;</span>
           </button>
         </div>
 
@@ -99,17 +108,17 @@ export function AuthModal() {
             e.preventDefault()
             void handleSubmit(e)
           }}
-          className="space-y-4 p-4 sm:p-6"
+          className="space-y-4 p-5 sm:p-6"
         >
           <div className="grid grid-cols-2 gap-2 rounded-2xl bg-[#f7f7f7] p-1">
             <button
               type="button"
               onClick={() => handleModeSwitch('login')}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+                'rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
                 mode === 'login'
                   ? 'bg-white text-[#202020] shadow-sm'
-                  : 'text-[#202020]/70',
+                  : 'text-[#202020]/70 hover:text-[#202020]',
               )}
             >
               Войти
@@ -118,10 +127,10 @@ export function AuthModal() {
               type="button"
               onClick={() => handleModeSwitch('register')}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+                'rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
                 mode === 'register'
                   ? 'bg-white text-[#202020] shadow-sm'
-                  : 'text-[#202020]/70',
+                  : 'text-[#202020]/70 hover:text-[#202020]',
               )}
             >
               Регистрация
@@ -139,7 +148,7 @@ export function AuthModal() {
               id={`${formId}-email`}
               type="email"
               placeholder="user@example.com"
-              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
+              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -156,7 +165,7 @@ export function AuthModal() {
               id={`${formId}-password`}
               type="password"
               placeholder="••••••••"
-              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
+              className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

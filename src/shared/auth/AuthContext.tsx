@@ -76,7 +76,7 @@ export function AuthProvider({ children }: Props) {
   }, [])
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string): Promise<string | null> => {
       setLastError(null)
       setStatus('loading')
       try {
@@ -86,6 +86,7 @@ export function AuthProvider({ children }: Props) {
         const current = await getCurrentUser(newToken)
         setUser(current)
         setStatus('authenticated')
+        return newToken
       } catch (error) {
         handleError(error)
         setUser(null)
@@ -99,18 +100,18 @@ export function AuthProvider({ children }: Props) {
   )
 
   const register = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string): Promise<string | null> => {
       setLastError(null)
       setStatus('loading')
       try {
         await apiRegister(email, password)
-        // После регистрации сразу пробуем логин с теми же данными
         const newToken = await apiLogin(email, password)
         writeStoredAuth({ token: newToken })
         setToken(newToken)
         const current = await getCurrentUser(newToken)
         setUser(current)
         setStatus('authenticated')
+        return newToken
       } catch (error) {
         handleError(error)
         setStatus('unauthenticated')

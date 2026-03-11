@@ -30,16 +30,23 @@ export function CoursesPage() {
   return (
     <div className="space-y-6 sm:space-y-10">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <h1 className="max-w-[947px] text-2xl font-medium leading-tight text-black sm:text-[40px] sm:leading-none lg:text-[60px]">
+        <h1 className="max-w-[947px] text-2xl font-medium leading-tight text-black sm:text-[40px] sm:leading-none lg:text-[60px] lg:leading-none">
           Начните заниматься спортом
-          <br className="hidden sm:block" />и улучшите качество жизни
+          <br />
+          и улучшите качество жизни
         </h1>
-        <div className="w-full shrink-0 rounded-md bg-[#BCEC30] px-4 py-3 sm:w-auto sm:px-5 sm:py-4">
-          <p className="text-xl font-normal leading-tight text-[#202020] sm:text-[24px] lg:text-[32px]">
-            Измени своё
-            <br />
-            тело за полгода!
-          </p>
+        <div className="relative w-full shrink-0 sm:w-auto">
+          <div className="rounded-[5px] bg-[#BCEC30] px-5 py-4">
+            <p className="text-xl font-normal leading-[1.1] text-[#202020] sm:text-[24px] lg:text-[32px]">
+              Измени своё
+              <br />
+              тело за полгода!
+            </p>
+          </div>
+          <div
+            className="absolute left-6 top-full h-0 w-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-[#BCEC30] sm:left-8"
+            aria-hidden
+          />
         </div>
       </section>
 
