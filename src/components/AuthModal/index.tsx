@@ -1,40 +1,34 @@
-import { useId, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-
-import { Button } from '../../components/Button'
+import { useId, useState } from 'react'
+import { Button } from '../Button'
 import { useAuth } from '../../shared/auth/AuthContext'
+import { useModal } from '../../shared/ui/ModalContext'
+import { addCourseForUser } from '../../shared/api/courses'
 import { cn } from '../../shared/lib/cn'
 
 type Mode = 'login' | 'register'
 
-export function AuthPage() {
+export function AuthModal() {
   const formId = useId()
-  const navigate = useNavigate()
-  const { login, register, lastError, clearError, status } = useAuth()
+  const { isAuthModalOpen, closeAuthModal, pendingCourseId } = useModal()
+  const { login, register, lastError, clearError, status, token } = useAuth()
 
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  const title = useMemo(() => {
-    if (mode === 'login') return 'Вход'
-    return 'Регистрация'
-  }, [mode])
-
   const isLoading = status === 'loading'
 
-  const handleSubmit = async (event: unknown) => {
-    if (
-      !event ||
-      typeof event !== 'object' ||
-      !('preventDefault' in event) ||
-      typeof (event as { preventDefault?: unknown }).preventDefault !== 'function'
-    ) {
-      return
-    }
+  if (!isAuthModalOpen) return null
 
-    ;(event as { preventDefault: () => void }).preventDefault()
+  const handleModeSwitch = (newMode: Mode) => {
+    setMode(newMode)
+    clearError()
+    setLocalError(null)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     setLocalError(null)
     clearError()
 
@@ -69,29 +63,41 @@ export function AuthPage() {
         await register(trimmedEmail, trimmedPassword)
       }
 
-      void navigate('/', { replace: true })
+      if (pendingCourseId && token) {
+        try {
+          await addCourseForUser(pendingCourseId, token)
+        } catch (error) {
+          console.error('Failed to add course after auth:', error)
+          setLocalError('Курс не был добавлен. Попробуйте ещё раз.')
+          return
+        }
+      }
+
+      closeAuthModal()
     } catch {
     }
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white shadow-xl">
         <div className="border-b border-slate-200 p-6">
-          <h1 className="text-xl font-bold text-slate-900">{title}</h1>
-          <p className="mt-2 text-sm text-slate-600">
-            Используется реальное API. Требования к паролю: минимум 6 символов, минимум 2
-            спецсимвола и минимум 1 заглавная буква.
-          </p>
+          <h2 className="text-xl font-bold text-slate-900">
+            {mode === 'login' ? 'Вход' : 'Регистрация'}
+          </h2>
+          <button
+            onClick={closeAuthModal}
+            className="absolute right-4 top-4 text-2xl text-slate-400 hover:text-slate-600"
+          >
+            &times;
+          </button>
+        </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6">
+          <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
             <button
               type="button"
-              onClick={() => {
-                setMode('login')
-                clearError()
-                setLocalError(null)
-              }}
+              onClick={() => handleModeSwitch('login')}
               className={cn(
                 'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
                 mode === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600',
@@ -101,11 +107,7 @@ export function AuthPage() {
             </button>
             <button
               type="button"
-              onClick={() => {
-                setMode('register')
-                clearError()
-                setLocalError(null)
-              }}
+              onClick={() => handleModeSwitch('register')}
               className={cn(
                 'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
                 mode === 'register'
@@ -116,15 +118,7 @@ export function AuthPage() {
               Регистрация
             </button>
           </div>
-        </div>
 
-        <form
-          className="space-y-4 p-6"
-          aria-labelledby={formId}
-          onSubmit={(event) => {
-            void handleSubmit(event)
-          }}
-        >
           <div className="space-y-2">
             <label
               className="text-sm font-medium text-slate-700"
@@ -138,7 +132,7 @@ export function AuthPage() {
               placeholder="user@example.com"
               className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -155,7 +149,7 @@ export function AuthPage() {
               placeholder="••••••••"
               className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
@@ -175,10 +169,6 @@ export function AuthPage() {
           <Button type="submit" fullWidth disabled={isLoading}>
             {isLoading ? 'Секунду...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
           </Button>
-
-          <div className="text-center text-xs text-slate-500">
-            Нажимая кнопку, вы соглашаетесь с условиями сервиса.
-          </div>
         </form>
       </div>
     </div>

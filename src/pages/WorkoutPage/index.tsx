@@ -3,12 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { Button } from '../../components/Button'
 import { fetchCourse } from '../../shared/api/courses'
-import {
-  fetchWorkout,
-  fetchWorkoutProgress,
-  saveWorkoutProgress,
-  type ApiWorkout,
-} from '../../shared/api/workouts'
+import { fetchWorkout, fetchWorkoutProgress, saveWorkoutProgress, type ApiWorkout } from '../../shared/api/workouts'
 import { useAuth } from '../../shared/auth/AuthContext'
 
 export function WorkoutPage() {
@@ -59,7 +54,6 @@ export function WorkoutPage() {
             setCourseName(course.nameRU)
           }
         } catch {
-          // необязательно для отображения
         }
       })
       .catch(() => {
@@ -94,7 +88,6 @@ export function WorkoutPage() {
         }
       })
       .catch(() => {
-        // без прогресса просто показываем базовые количества
       })
 
     return () => {
@@ -212,6 +205,7 @@ export function WorkoutPage() {
                     className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1 text-right text-sm"
                     value={progress[idx] ?? 0}
                     onChange={(event) => handleProgressChange(idx, event.target.value)}
+                    aria-label={`Количество для упражнения ${ex.name}`}
                   />
                 </div>
               ))}

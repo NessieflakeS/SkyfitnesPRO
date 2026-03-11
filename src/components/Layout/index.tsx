@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom'
-
 import { Footer } from '../Footer'
 import { Header } from '../Header'
 import { ScrollToTopButton } from '../ScrollToTopButton'
+import { AuthModal } from '../AuthModal'
 
 export function Layout() {
   return (
@@ -13,6 +13,7 @@ export function Layout() {
       </main>
       <Footer />
       <ScrollToTopButton />
+      <AuthModal />
     </div>
   )
 }

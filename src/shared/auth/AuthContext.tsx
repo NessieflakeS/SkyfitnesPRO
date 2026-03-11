@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import {
   createContext,
   useCallback,
@@ -104,7 +103,6 @@ export function AuthProvider({ children }: Props) {
       setStatus('loading')
       try {
         await apiRegister(email, password)
-        // После регистрации сразу пробуем логин с теми же данными
         const newToken = await apiLogin(email, password)
         writeStoredAuth({ token: newToken })
         setToken(newToken)
