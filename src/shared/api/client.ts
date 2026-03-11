@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = String(import.meta.env.VITE_API_BASE_URL ?? '/api/fitness')
+const DEFAULT_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/fitness'
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE'
 
@@ -15,7 +15,9 @@ async function request<TResponse>(
     token?: string | null
   } = {},
 ): Promise<TResponse> {
-  const url = `${DEFAULT_BASE_URL}${path}`
+  // Убираем дублирование /api/fitness если оно уже есть в path
+  const cleanPath = path.startsWith('/') ? path : `/${path}`
+  const url = `${DEFAULT_BASE_URL}${cleanPath}`
 
   const headers = new Headers()
   headers.set('Content-Type', 'application/json')
@@ -39,7 +41,7 @@ async function request<TResponse>(
         'message' in data &&
         typeof (data as { message?: string }).message === 'string' &&
         (data as { message: string }).message) ??
-      'Произошла ошибка при запросе'
+      `Ошибка ${response.status}: ${response.statusText}`
 
     const error = new Error(message) as Error & ApiError
     error.status = response.status

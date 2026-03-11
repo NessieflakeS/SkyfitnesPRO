@@ -7,10 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://your-api-url.com',
+        target: 'https://github.com',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api/fitness')
+        rewrite: (path) => path.replace(/^\/api/, '/GlebkaF/webdev-hw-api/main/pages/api/fitness')
       }
     }
   }

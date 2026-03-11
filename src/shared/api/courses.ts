@@ -20,7 +20,7 @@ export type ApiWorkoutShort = {
   _id: string
   name: string
   video: string
-  exercises: unknown[]
+  exercises: Array<{ _id: string; name: string; quantity: number }>
 }
 
 export function fetchCourses() {
