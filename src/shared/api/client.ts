@@ -15,7 +15,6 @@ async function request<TResponse>(
     token?: string | null
   } = {},
 ): Promise<TResponse> {
-  // Убираем дублирование /api/fitness если оно уже есть в path
   const cleanPath = path.startsWith('/') ? path : `/${path}`
   const url = `${DEFAULT_BASE_URL}${cleanPath}`
 
@@ -35,13 +34,11 @@ async function request<TResponse>(
   const data = text ? (JSON.parse(text) as unknown) : null
 
   if (!response.ok) {
-    const message =
-      (data &&
-        typeof data === 'object' &&
-        'message' in data &&
-        typeof (data as { message?: string }).message === 'string' &&
-        (data as { message: string }).message) ??
-      `Ошибка ${response.status}: ${response.statusText}`
+    let message = `Ошибка ${response.status}: ${response.statusText}`
+    
+    if (data && typeof data === 'object' && 'message' in data && typeof (data as { message?: string }).message === 'string') {
+      message = (data as { message: string }).message
+    }
 
     const error = new Error(message) as Error & ApiError
     error.status = response.status
