@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { Button } from '../../components/Button'
+import { WorkoutSelectionModal } from '../../components/WorkoutSelectionModal'
 import {
   fetchCourses,
   removeCourseForUser,
+  resetCourseProgress,
   type ApiCourse,
 } from '../../shared/api/courses'
 import { useAuth } from '../../shared/auth/AuthContext'
@@ -16,6 +18,8 @@ export function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [removingId, setRemovingId] = useState<string | null>(null)
+  const [resettingId, setResettingId] = useState<string | null>(null)
+  const [workoutModalCourse, setWorkoutModalCourse] = useState<ApiCourse | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -59,6 +63,18 @@ export function ProfilePage() {
       setError('Не удалось удалить курс')
     } finally {
       setRemovingId(null)
+    }
+  }
+
+  const handleResetProgress = async (courseId: string) => {
+    if (!token) return
+    setResettingId(courseId)
+    try {
+      await resetCourseProgress(courseId, token)
+    } catch {
+      setError('Не удалось сбросить прогресс')
+    } finally {
+      setResettingId(null)
     }
   }
 
@@ -111,7 +127,18 @@ export function ProfilePage() {
                   aria-hidden
                 />
                 <div className="space-y-3 p-5">
-                  <div className="text-sm font-semibold text-slate-900">
+                  <div
+                    className="cursor-pointer text-sm font-semibold text-slate-900"
+                    onClick={() => setWorkoutModalCourse(course)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setWorkoutModalCourse(course)
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
                     {course.nameRU}
                   </div>
                   <div className="text-xs text-slate-500">
@@ -119,17 +146,23 @@ export function ProfilePage() {
                   </div>
 
                   {course.workouts.length > 0 ? (
-                    <Link
-                      to={`/workouts/${course.workouts[0]}`}
-                      className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
-                    >
-                      Начать тренировку
-                    </Link>
+                    <Button fullWidth onClick={() => setWorkoutModalCourse(course)}>
+                      Выбрать тренировку
+                    </Button>
                   ) : (
                     <Button disabled fullWidth>
-                      Начать тренировку
+                      Выбрать тренировку
                     </Button>
                   )}
+
+                  <Button
+                    variant="secondary"
+                    disabled={resettingId === course._id}
+                    fullWidth
+                    onClick={() => void handleResetProgress(course._id)}
+                  >
+                    {resettingId === course._id ? 'Сброс…' : 'Сбросить прогресс'}
+                  </Button>
 
                   <Button
                     variant="secondary"
@@ -143,6 +176,14 @@ export function ProfilePage() {
               </article>
             ))}
         </div>
+
+        {workoutModalCourse && token && (
+          <WorkoutSelectionModal
+            course={workoutModalCourse}
+            token={token}
+            onClose={() => setWorkoutModalCourse(null)}
+          />
+        )}
       </section>
     </div>
   )

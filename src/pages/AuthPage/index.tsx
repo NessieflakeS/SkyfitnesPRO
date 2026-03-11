@@ -71,6 +71,7 @@ export function AuthPage() {
 
       void navigate('/', { replace: true })
     } catch {
+      // lastError задаётся в контексте
     }
   }
 
@@ -173,7 +174,7 @@ export function AuthPage() {
           )}
 
           <Button type="submit" fullWidth disabled={isLoading}>
-            {isLoading ? 'Секунду...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
+            {isLoading ? 'Подождите…' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
           </Button>
 
           <div className="text-center text-xs text-slate-500">

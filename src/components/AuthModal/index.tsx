@@ -1,16 +1,17 @@
 import { useId, useState } from 'react'
-import { Button } from '../Button'
-import { useAuth } from '../../shared/auth/AuthContext'
-import { useModal } from '../../shared/ui/ModalContext'
+
 import { addCourseForUser } from '../../shared/api/courses'
+import { useAuth } from '../../shared/auth/AuthContext'
 import { cn } from '../../shared/lib/cn'
+import { useModal } from '../../shared/ui/ModalContext'
+import { Button } from '../Button'
 
 type Mode = 'login' | 'register'
 
 export function AuthModal() {
   const formId = useId()
   const { isAuthModalOpen, closeAuthModal, pendingCourseId } = useModal()
-  const { login, register, lastError, clearError, status, token } = useAuth()
+  const { clearError, lastError, login, register, status, token } = useAuth()
 
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
@@ -27,7 +28,7 @@ export function AuthModal() {
     setLocalError(null)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     setLocalError(null)
     clearError()
@@ -66,8 +67,7 @@ export function AuthModal() {
       if (pendingCourseId && token) {
         try {
           await addCourseForUser(pendingCourseId, token)
-        } catch (error) {
-          console.error('Failed to add course after auth:', error)
+        } catch {
           setLocalError('Курс не был добавлен. Попробуйте ещё раз.')
           return
         }
@@ -75,6 +75,7 @@ export function AuthModal() {
 
       closeAuthModal()
     } catch {
+      setLocalError(lastError ?? 'Не удалось выполнить вход')
     }
   }
 
@@ -93,7 +94,13 @@ export function AuthModal() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 p-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            void handleSubmit(e)
+          }}
+          className="space-y-4 p-6"
+        >
           <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
             <button
               type="button"

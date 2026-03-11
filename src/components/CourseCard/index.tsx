@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../shared/auth/AuthContext'
-import { useModal } from '../../shared/ui/ModalContext'
-import { Button } from '../Button'
+
 import { getCourseLevelLabel } from '../../shared/mock/courses'
+import { Button } from '../Button'
+
 import type { Course } from '../../shared/types/fitness'
 
 type Props = {
@@ -10,17 +10,6 @@ type Props = {
 }
 
 export function CourseCard({ course }: Props) {
-  const { status } = useAuth()
-  const { openAuthModal } = useModal()
-
-  const handleAddCourse = () => {
-    if (status !== 'authenticated') {
-      openAuthModal(course.id)
-    } else {
-      console.log('Добавляем курс', course.id)
-    }
-  }
-
   return (
     <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       <div
@@ -56,7 +45,7 @@ export function CourseCard({ course }: Props) {
           >
             Подробнее
           </Link>
-          <Button variant="secondary" onClick={handleAddCourse} className="w-full sm:w-auto">
+          <Button variant="secondary" disabled className="w-full sm:w-auto">
             Добавить курс
           </Button>
         </div>

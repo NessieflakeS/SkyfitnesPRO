@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/fitness'
+const DEFAULT_BASE_URL = String(import.meta.env.VITE_API_BASE_URL ?? '/api/fitness')
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE'
 
@@ -15,8 +15,7 @@ async function request<TResponse>(
     token?: string | null
   } = {},
 ): Promise<TResponse> {
-  const cleanPath = path.startsWith('/') ? path : `/${path}`
-  const url = `${DEFAULT_BASE_URL}${cleanPath}`
+  const url = `${DEFAULT_BASE_URL}${path}`
 
   const headers = new Headers()
   headers.set('Content-Type', 'application/json')
@@ -34,11 +33,13 @@ async function request<TResponse>(
   const data = text ? (JSON.parse(text) as unknown) : null
 
   if (!response.ok) {
-    let message = `Ошибка ${response.status}: ${response.statusText}`
-    
-    if (data && typeof data === 'object' && 'message' in data && typeof (data as { message?: string }).message === 'string') {
-      message = (data as { message: string }).message
-    }
+    const message =
+      (data &&
+        typeof data === 'object' &&
+        'message' in data &&
+        typeof (data as { message?: string }).message === 'string' &&
+        (data as { message: string }).message) ??
+      'Произошла ошибка при запросе'
 
     const error = new Error(message) as Error & ApiError
     error.status = response.status

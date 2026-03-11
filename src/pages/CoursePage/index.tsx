@@ -152,8 +152,10 @@ export function CoursePage() {
               variant="secondary"
               disabled={!isOwned}
               onClick={() => {
-                if (workouts.length > 0) {
-                  void navigate(`/workouts/${workouts[0]._id}`)
+                if (workouts.length > 0 && courseId) {
+                  void navigate(`/workouts/${workouts[0]._id}`, {
+                    state: { courseId },
+                  })
                 }
               }}
             >
@@ -198,6 +200,7 @@ export function CoursePage() {
             <Link
               key={workout._id}
               to={`/workouts/${workout._id}`}
+              state={courseId ? { courseId } : undefined}
               className="group flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:bg-slate-50"
             >
               <div className="min-w-0">

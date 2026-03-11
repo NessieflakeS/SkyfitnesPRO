@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { CourseCard } from '../../components/CourseCard'
 import { fetchCourses, type ApiCourse } from '../../shared/api/courses'
 import { mapApiCourseToCourse } from '../../shared/mappers/courseMapper'

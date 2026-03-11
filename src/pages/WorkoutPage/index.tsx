@@ -2,14 +2,23 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { Button } from '../../components/Button'
+import { ProgressModal } from '../../components/ProgressModal'
 import { fetchCourse } from '../../shared/api/courses'
-import { fetchWorkout, fetchWorkoutProgress, saveWorkoutProgress, type ApiWorkout } from '../../shared/api/workouts'
+import {
+  fetchWorkout,
+  fetchWorkoutProgress,
+  saveWorkoutProgress,
+  type ApiWorkout,
+} from '../../shared/api/workouts'
 import { useAuth } from '../../shared/auth/AuthContext'
+
+type LocationState = { courseId?: string }
 
 export function WorkoutPage() {
   const { workoutId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
+  const courseId = (location.state as LocationState | null)?.courseId
   const { status, token } = useAuth()
 
   const [workout, setWorkout] = useState<ApiWorkout | null>(null)
@@ -17,8 +26,7 @@ export function WorkoutPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [progress, setProgress] = useState<number[]>([])
-  const [saving, setSaving] = useState(false)
-  const [progressMessage, setProgressMessage] = useState<string | null>(null)
+  const [progressModalOpen, setProgressModalOpen] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -30,31 +38,19 @@ export function WorkoutPage() {
   }, [status, navigate, location])
 
   useEffect(() => {
-    let cancelled = false
+    if (!workoutId) return
 
-    if (!workoutId) {
-      return () => {
-        cancelled = true
-      }
-    }
+    let cancelled = false
     setLoading(true)
     setError(null)
 
     void fetchWorkout(workoutId)
-      .then(async (data) => {
+      .then((data) => {
         if (cancelled) return
         setWorkout(data)
         setProgress(
           data.exercises.map((ex) => (typeof ex.quantity === 'number' ? ex.quantity : 0)),
         )
-
-        try {
-          const course = await fetchCourse(data._id)
-          if (!cancelled) {
-            setCourseName(course.nameRU)
-          }
-        } catch {
-        }
       })
       .catch(() => {
         if (cancelled) return
@@ -72,28 +68,36 @@ export function WorkoutPage() {
   }, [workoutId])
 
   useEffect(() => {
+    if (!courseId) return
+    let cancelled = false
+    void fetchCourse(courseId)
+      .then((course) => {
+        if (!cancelled) setCourseName(course.nameRU)
+      })
+      .catch(() => undefined)
+    return () => {
+      cancelled = true
+    }
+  }, [courseId])
+
+  useEffect(() => {
+    if (!token || !workout || !courseId) return
+
     let cancelled = false
 
-    if (!token || !workout) {
-      return () => {
-        cancelled = true
-      }
-    }
-
-    void fetchWorkoutProgress(workout._id, workout._id, token)
+    void fetchWorkoutProgress(courseId, workout._id, token)
       .then((data) => {
         if (cancelled) return
         if (data.progressData?.length === workout.exercises.length) {
-          setProgress(data.progressData)
+          setProgress(data.progressData ?? [])
         }
       })
-      .catch(() => {
-      })
+      .catch(() => undefined)
 
     return () => {
       cancelled = true
     }
-  }, [workoutId, token, workout])
+  }, [courseId, token, workout])
 
   if (!workoutId) {
     return (
@@ -136,28 +140,10 @@ export function WorkoutPage() {
     )
   }
 
-  const handleProgressChange = (index: number, value: string) => {
-    const numeric = Number(value.replace(/\D/g, ''))
-    if (Number.isNaN(numeric)) return
-    setProgress((prev) => prev.map((item, idx) => (idx === index ? numeric : item)))
-  }
-
-  const handleSaveProgress = async () => {
-    if (!token) {
-      void navigate('/auth', { state: { from: location.pathname } })
-      return
-    }
-
-    try {
-      setSaving(true)
-      setProgressMessage(null)
-      await saveWorkoutProgress(workout._id, workout._id, progress, token)
-      setProgressMessage('Прогресс сохранён')
-    } catch {
-      setProgressMessage('Не удалось сохранить прогресс')
-    } finally {
-      setSaving(false)
-    }
+  const handleSaveProgress = async (newProgress: number[]) => {
+    if (!token || !courseId) return
+    await saveWorkoutProgress(courseId, workout._id, newProgress, token)
+    setProgress(newProgress)
   }
 
   return (
@@ -194,38 +180,34 @@ export function WorkoutPage() {
                   key={ex._id}
                   className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3"
                 >
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-medium text-slate-900">
-                      {idx + 1}. {ex.name}
-                    </div>
+                  <div className="min-w-0 truncate text-sm font-medium text-slate-900">
+                    {idx + 1}. {ex.name}
                   </div>
-                  <input
-                    type="number"
-                    min={0}
-                    className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1 text-right text-sm"
-                    value={progress[idx] ?? 0}
-                    onChange={(event) => handleProgressChange(idx, event.target.value)}
-                    aria-label={`Количество для упражнения ${ex.name}`}
-                  />
+                  <div className="shrink-0 text-sm text-slate-500">
+                    {progress[idx] ?? 0} / {ex.quantity}
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 space-y-3">
-              <Button
-                fullWidth
-                disabled={saving}
-                onClick={() => void handleSaveProgress()}
-              >
-                {saving ? 'Сохранение…' : 'Заполнить прогресс'}
+            <div className="mt-6">
+              <Button fullWidth onClick={() => setProgressModalOpen(true)}>
+                Заполнить прогресс
               </Button>
-              {progressMessage && (
-                <div className="text-xs text-slate-500">{progressMessage}</div>
-              )}
             </div>
           </div>
         </div>
       </section>
+
+      {progressModalOpen && (
+        <ProgressModal
+          exercises={workout.exercises}
+          initialProgress={progress}
+          onSave={handleSaveProgress}
+          onClose={() => setProgressModalOpen(false)}
+          noCourseId={!courseId}
+        />
+      )}
     </div>
   )
 }

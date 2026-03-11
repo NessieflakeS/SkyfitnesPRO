@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../shared/auth/AuthContext'
@@ -9,8 +10,22 @@ const linkBase =
 export function Header() {
   const navigate = useNavigate()
   const { status, user, logout } = useAuth()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [menuOpen])
 
   const handleLogout = () => {
+    setMenuOpen(false)
     logout()
     void navigate('/')
   }
@@ -57,15 +72,45 @@ export function Header() {
             Профиль
           </NavLink>
           {status === 'authenticated' && user ? (
-            <div className="flex items-center gap-2">
-              <div className="hidden text-xs text-slate-500 sm:block">{user.email}</div>
+            <div className="relative" ref={menuRef}>
               <button
                 type="button"
-                onClick={handleLogout}
-                className={cn(linkBase, 'text-slate-700 hover:bg-slate-100')}
+                onClick={() => setMenuOpen((v) => !v)}
+                className={cn(
+                  linkBase,
+                  'text-slate-700 hover:bg-slate-100',
+                  menuOpen && 'bg-slate-100',
+                )}
+                aria-expanded={menuOpen}
+                aria-haspopup="true"
               >
-                Выйти
+                <span className="hidden sm:inline">{user.email}</span>
+                <span className="sm:ml-1.5">
+                  {menuOpen ? (
+                    <span className="inline-block size-4 align-middle">▲</span>
+                  ) : (
+                    <span className="inline-block size-4 align-middle">▼</span>
+                  )}
+                </span>
               </button>
+              {menuOpen && (
+                <div className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                  <NavLink
+                    to="/profile"
+                    className="block px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Профиль
+                  </NavLink>
+                  <button
+                    type="button"
+                    className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    onClick={handleLogout}
+                  >
+                    Выйти
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <NavLink
