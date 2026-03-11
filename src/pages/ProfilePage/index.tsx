@@ -84,10 +84,12 @@ export function ProfilePage() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:p-10">
+      <section className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6 md:p-10">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight text-[#202020]">Профиль</h1>
+            <h1 className="text-xl font-bold tracking-tight text-[#202020] sm:text-2xl">
+              Профиль
+            </h1>
             <div className="text-sm text-[#202020]/70">{user.email}</div>
           </div>
         </div>
@@ -107,12 +109,12 @@ export function ProfilePage() {
           </div>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           {loading &&
             Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={index}
-                className="h-48 animate-pulse rounded-[30px] border border-[#D9D9D9] bg-[#f7f7f7]"
+                className="h-40 animate-pulse rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] sm:rounded-[30px] sm:h-48"
               />
             ))}
 
@@ -120,13 +122,13 @@ export function ProfilePage() {
             courses.map((course) => (
               <article
                 key={course._id}
-                className="overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]"
+                className="overflow-hidden rounded-2xl border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]"
               >
                 <div
-                  className="h-24 bg-gradient-to-br from-slate-900 to-indigo-700"
+                  className="h-20 bg-gradient-to-br from-slate-900 to-indigo-700 sm:h-24"
                   aria-hidden
                 />
-                <div className="space-y-3 p-5">
+                <div className="space-y-3 p-4 sm:p-5">
                   <div
                     className="cursor-pointer text-sm font-semibold text-[#202020]"
                     onClick={() => setWorkoutModalCourse(course)}

@@ -13,10 +13,11 @@ type Props = PropsWithChildren<
 
 const variantClass: Record<Variant, string> = {
   primary:
-    'bg-[#BCEC30] text-black hover:bg-[#99D100] rounded-[46px] px-6 py-4 text-[18px] font-normal',
+    'rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]',
   secondary:
-    'bg-[#f7f7f7] text-[#202020] hover:bg-[#e5e5e5] rounded-[46px] px-6 py-4 text-[18px] font-normal',
-  ghost: 'bg-transparent text-[#202020] hover:bg-[#f7f7f7] rounded-xl px-4 py-2 text-sm',
+    'rounded-[46px] bg-[#f7f7f7] px-4 py-3 text-base font-normal text-[#202020] hover:bg-[#e5e5e5] sm:px-6 sm:py-4 sm:text-[18px]',
+  ghost:
+    'rounded-xl bg-transparent px-4 py-2 text-sm text-[#202020] hover:bg-[#f7f7f7]',
 }
 
 export function Button({

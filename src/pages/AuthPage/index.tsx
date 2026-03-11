@@ -76,10 +76,10 @@ export function AuthPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg">
-      <div className="overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-        <div className="border-b border-[#D9D9D9] p-6">
-          <h1 className="text-xl font-bold text-[#202020]">{title}</h1>
+    <div className="mx-auto w-full max-w-lg px-1 sm:px-0">
+      <div className="overflow-hidden rounded-2xl border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
+        <div className="border-b border-[#D9D9D9] p-4 sm:p-6">
+          <h1 className="text-lg font-bold text-[#202020] sm:text-xl">{title}</h1>
           <p className="mt-2 text-sm text-[#202020]/70">
             Используется реальное API. Требования к паролю: минимум 6 символов, минимум 2
             спецсимвола и минимум 1 заглавная буква.
@@ -122,7 +122,7 @@ export function AuthPage() {
         </div>
 
         <form
-          className="space-y-4 p-6"
+          className="space-y-4 p-4 sm:p-6"
           aria-labelledby={formId}
           onSubmit={(event) => {
             void handleSubmit(event)

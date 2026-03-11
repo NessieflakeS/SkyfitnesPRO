@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer className="border-t border-[#D9D9D9] bg-white">
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-[#202020]/60 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-6xl px-3 py-6 text-xs text-[#202020]/60 sm:px-6 sm:py-8 sm:text-sm lg:px-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} SkyFitnessPro</div>
         </div>

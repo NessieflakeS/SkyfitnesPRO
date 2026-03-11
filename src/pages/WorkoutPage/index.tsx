@@ -101,14 +101,16 @@ export function WorkoutPage() {
 
   if (!workoutId) {
     return (
-      <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-        <h1 className="text-lg font-semibold text-[#202020]">Тренировка не найдена</h1>
-        <p className="mt-2 text-sm text-[#202020]/70">
+      <div className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
+        <h1 className="text-base font-semibold text-[#202020] sm:text-lg">
+          Тренировка не найдена
+        </h1>
+        <p className="mt-2 text-xs text-[#202020]/70 sm:text-sm">
           Проверьте ссылку или вернитесь к курсам.
         </p>
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           <Link
-            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
+            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]"
             to="/"
           >
             Перейти к курсам
@@ -129,14 +131,16 @@ export function WorkoutPage() {
 
   if (error || !workout) {
     return (
-      <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
-        <h1 className="text-lg font-semibold text-[#202020]">Тренировка не найдена</h1>
-        <p className="mt-2 text-sm text-[#202020]/70">
+      <div className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
+        <h1 className="text-base font-semibold text-[#202020] sm:text-lg">
+          Тренировка не найдена
+        </h1>
+        <p className="mt-2 text-xs text-[#202020]/70 sm:text-sm">
           {error ?? 'Проверьте ссылку или вернитесь к курсам.'}
         </p>
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           <Link
-            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-6 py-4 text-[18px] font-normal text-black hover:bg-[#99D100]"
+            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]"
             to="/"
           >
             Перейти к курсам
@@ -153,19 +157,19 @@ export function WorkoutPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <section className="space-y-2">
+    <div className="space-y-5 sm:space-y-8">
+      <section className="space-y-1 sm:space-y-2">
         <div className="text-xs font-medium text-[#202020]/60">
           {courseName ? <span>{courseName}</span> : 'Курс'} / Тренировка
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#202020] sm:text-[32px]">
+        <h1 className="text-xl font-bold tracking-tight text-[#202020] sm:text-2xl md:text-[32px]">
           {workout.name}
         </h1>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-3">
-          <div className="aspect-video overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-black shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+      <section className="grid gap-4 sm:gap-6 lg:grid-cols-5">
+        <div className="min-w-0 lg:col-span-3">
+          <div className="aspect-video overflow-hidden rounded-2xl border border-[#D9D9D9] bg-black shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
             <iframe
               className="h-full w-full"
               src={workout.video}
@@ -177,8 +181,8 @@ export function WorkoutPage() {
           </div>
         </div>
 
-        <div className="space-y-4 lg:col-span-2">
-          <div className="rounded-[30px] border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+        <div className="min-w-0 space-y-4 lg:col-span-2">
+          <div className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
             <div className="text-sm font-semibold text-[#202020]">Упражнения</div>
             <div className="mt-4 space-y-3">
               {workout.exercises.map((ex, idx) => (

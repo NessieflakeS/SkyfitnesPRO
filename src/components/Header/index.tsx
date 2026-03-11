@@ -5,7 +5,7 @@ import { useAuth } from '../../shared/auth/AuthContext'
 import { cn } from '../../shared/lib/cn'
 
 const linkBase =
-  'inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors'
+  'inline-flex items-center rounded-lg px-2 py-1.5 text-xs font-medium transition-colors sm:px-3 sm:py-2 sm:text-sm'
 
 export function Header() {
   const navigate = useNavigate()
@@ -32,20 +32,22 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#D9D9D9] bg-white/95 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
-        <NavLink to="/" className="flex items-center gap-2">
-          <div className="grid size-9 place-items-center rounded-xl bg-slate-900 text-white">
+      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-4 lg:px-8">
+        <NavLink to="/" className="flex min-w-0 shrink-0 items-center gap-2">
+          <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-slate-900 text-white sm:size-9 sm:rounded-xl">
             SF
           </div>
-          <div className="leading-tight">
-            <div className="text-sm font-semibold text-black">SkyFitnessPro</div>
-            <div className="text-[18px] text-black/50">
+          <div className="min-w-0 leading-tight">
+            <div className="truncate text-xs font-semibold text-black sm:text-sm">
+              SkyFitnessPro
+            </div>
+            <div className="hidden truncate text-[18px] text-black/50 sm:block md:text-base">
               Онлайн-тренировки для занятий дома
             </div>
           </div>
         </NavLink>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -119,7 +121,7 @@ export function Header() {
               to="/auth"
               className={({ isActive }) =>
                 cn(
-                  'inline-flex items-center rounded-[46px] px-6 py-4 text-[18px] font-normal transition-colors',
+                  'inline-flex items-center rounded-[46px] px-4 py-2.5 text-base font-normal transition-colors sm:px-6 sm:py-4 sm:text-[18px]',
                   isActive
                     ? 'bg-[#BCEC30] text-black'
                     : 'bg-[#BCEC30] text-black hover:bg-[#99D100]',

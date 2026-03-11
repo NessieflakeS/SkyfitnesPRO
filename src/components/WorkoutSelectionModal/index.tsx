@@ -48,10 +48,12 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-lg rounded-[30px] border border-[#D9D9D9] bg-white shadow-xl">
-        <div className="border-b border-[#D9D9D9] p-6">
-          <h2 className="pr-8 text-xl font-bold text-[#202020]">Тренировки курса</h2>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+      <div className="relative w-full max-h-[85vh] max-w-lg rounded-t-2xl border border-[#D9D9D9] bg-white shadow-xl sm:max-h-none sm:rounded-[30px]">
+        <div className="border-b border-[#D9D9D9] p-4 sm:p-6">
+          <h2 className="pr-8 text-lg font-bold text-[#202020] sm:text-xl">
+            Тренировки курса
+          </h2>
           <p className="mt-1 text-sm text-[#202020]/70">{course.nameRU}</p>
           <button
             type="button"
@@ -63,7 +65,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           </button>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto p-6">
+        <div className="max-h-[60vh] overflow-y-auto p-4 sm:p-6">
           {loading ? (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
