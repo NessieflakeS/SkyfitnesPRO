@@ -41,5 +41,5 @@
 }
 
 .runnerWrap {
-  @apply pointer-events-none absolute right-[-18%] top-[-220px] z-[12] h-[300px] w-[74%] min-w-[200px] overflow-visible sm:right-[2%] sm:top-[-226px] sm:z-[17] sm:h-[430px] sm:w-[46%] sm:overflow-visible;
+  @apply pointer-events-none absolute right-[-18%] top-[-220px] z-[12] h-[300px] w-[74%] min-w-[200px] overflow-visible sm:bottom-[7px] sm:right-[2%] sm:top-auto sm:z-[17] sm:h-[390px] sm:w-[46%] sm:overflow-visible;
 }
