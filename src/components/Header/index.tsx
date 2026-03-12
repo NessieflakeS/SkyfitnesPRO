@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../shared/auth/AuthContext'
-import { useModal } from '../../shared/ui/ModalContext'
 import { cn } from '../../shared/lib/cn'
+import { useModal } from '../../shared/ui/ModalContext'
 
 export function Header() {
   const navigate = useNavigate()
@@ -29,25 +29,30 @@ export function Header() {
     void navigate('/')
   }
 
-  const displayName = user?.email?.split('@')[0] ?? user?.email ?? 'Пользователь'
+  const displayName =
+    status === 'authenticated' && user
+      ? (user.email?.split('@')[0] ?? user.email ?? 'Пользователь') // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+      : ''
   const ariaExpandedValue = menuOpen ? 'true' : 'false'
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#D9D9D9] bg-white/95 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-4 lg:px-8">
-        <NavLink to="/" className="flex min-w-0 shrink-0 flex-col gap-0.5 sm:gap-1" title="На главную">
-          <div className="flex shrink-0 items-center">
-            <img
-              src="/logo.png"
-              alt="SkyFitnessPro"
-              className="h-[35px] w-[220px] object-contain object-left"
-              width={220}
-              height={35}
-            />
-          </div>
-          <div className="truncate text-xs text-black/50 sm:text-[18px] md:text-base">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-4 lg:px-8">
+        <NavLink
+          to="/"
+          className="flex min-w-0 shrink-0 flex-col gap-0.5 sm:gap-1"
+          title="На главную"
+        >
+          <img
+            src="/logo.png"
+            alt="SkyFitnessPro"
+            className="h-7 w-auto max-w-[120px] object-contain object-left sm:h-[32px] sm:max-w-[180px] md:h-[35px] md:max-w-[220px]"
+            width={220}
+            height={35}
+          />
+          <span className="hidden truncate text-[#202020]/70 sm:block sm:text-sm md:text-base">
             Онлайн-тренировки для занятий дома
-          </div>
+          </span>
         </NavLink>
 
         <div className="flex shrink-0 items-center">
@@ -68,7 +73,7 @@ export function Header() {
                     {displayName.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <span className="max-w-[120px] truncate text-sm font-medium text-[#202020] sm:max-w-[180px]">
+                <span className="hidden max-w-[120px] truncate text-sm font-medium text-[#202020] sm:inline-block sm:max-w-[180px]">
                   {displayName}
                 </span>
                 <span
@@ -78,13 +83,21 @@ export function Header() {
                   )}
                   aria-hidden
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M6 9l6 6 6-6" />
                   </svg>
                 </span>
               </button>
               {menuOpen && (
-                <div role="menu" className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-[#D9D9D9] bg-white py-1 shadow-lg">
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-[#D9D9D9] bg-white py-1 shadow-lg"
+                >
                   <NavLink
                     to="/profile"
                     role="menuitem"

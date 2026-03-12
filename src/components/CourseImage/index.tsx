@@ -10,9 +10,6 @@ type Props = {
   objectPosition?: string
 }
 
-/**
- * Картинка курса с запасным вариантом: при ошибке загрузки показывается фон (fallbackClassName).
- */
 export function CourseImage({
   src,
   alt,

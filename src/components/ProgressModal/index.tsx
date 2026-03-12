@@ -107,9 +107,7 @@ export function ProgressModal({
                 </div>
               ))}
             </div>
-            {message && (
-              <div className={cn('mt-4 text-sm text-rose-600')}>{message}</div>
-            )}
+            {message && <div className={cn('mt-4 text-sm text-rose-600')}>{message}</div>}
             <div className="mt-6">
               <Button type="submit" fullWidth disabled={saving}>
                 {saving ? 'Сохранение…' : 'Сохранить'}

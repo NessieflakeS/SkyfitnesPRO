@@ -28,13 +28,13 @@ export function CoursesPage() {
   }, [])
 
   return (
-    <div className="space-y-6 sm:space-y-10">
+    <div className="space-y-5 sm:space-y-8 md:space-y-10">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <h1 className="max-w-[947px] text-[56px] font-medium leading-tight text-black">
+        <h1 className="max-w-[947px] text-2xl font-medium leading-tight text-[#202020] sm:text-4xl md:text-5xl lg:text-[56px] lg:font-medium lg:text-black">
           <span className="block whitespace-nowrap">Начните заниматься спортом</span>
           <span className="block">и улучшите качество жизни</span>
         </h1>
-        <div className="relative w-full shrink-0 sm:w-auto">
+        <div className="relative hidden w-full shrink-0 sm:block sm:w-auto">
           <div className="rounded-[5px] bg-[#BCEC30] px-5 py-4">
             <p className="text-xl font-normal leading-[1.1] text-[#202020] sm:text-[24px] lg:text-[32px]">
               Измени своё
@@ -55,7 +55,7 @@ export function CoursesPage() {
         </div>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+      <section className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {courses
           ? courses.map((course) => (
               <CourseCard key={course._id} course={mapApiCourseToCourse(course)} />

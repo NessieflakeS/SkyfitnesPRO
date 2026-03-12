@@ -17,7 +17,13 @@ type Props = {
 }
 
 const IconCheck = ({ className }: { className?: string }) => (
-  <svg className={cn('size-5', className)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+  <svg
+    className={cn('size-5', className)}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+  >
     <path d="M5 12l5 5L20 7" />
   </svg>
 )
@@ -37,22 +43,29 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
     }
     let cancelled = false
     setLoading(true)
-    Promise.all([fetchCourseWorkouts(course._id, token), fetchCourseProgress(course._id, token)])
+    void Promise.all([
+      fetchCourseWorkouts(course._id, token),
+      fetchCourseProgress(course._id, token),
+    ])
       .then(([workoutsData, progressData]) => {
         if (cancelled) return
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- API may return undefined
         const list = workoutsData ?? []
-        const orderIds = course.workouts ?? []
+        const orderIds = course.workouts
         const ordered = list.slice().sort((a, b) => {
           const i = orderIds.indexOf(a._id)
           const j = orderIds.indexOf(b._id)
           return (i === -1 ? 999 : i) - (j === -1 ? 999 : j)
         })
         setWorkouts(ordered)
-        setProgress(progressData ?? null)
+        setProgress(progressData)
+        const wp = progressData.workoutsProgress
         const firstIncomplete = ordered.find(
-          (w) => !progressData?.workoutsProgress?.find((p) => p.workoutId === w._id)?.workoutCompleted,
+          (w) => !wp?.find((p) => p.workoutId === w._id)?.workoutCompleted,
         )
-        setSelectedId(firstIncomplete?._id ?? ordered[0]?._id ?? null)
+        const firstId = firstIncomplete?._id ?? ordered[0]?._id
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- firstId can be undefined
+        setSelectedId(firstId ?? null)
       })
       .catch(() => {
         if (cancelled) return
@@ -64,7 +77,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
     return () => {
       cancelled = true
     }
-  }, [course._id, token])
+  }, [course._id, course.workouts, token])
 
   const getWorkoutStatus = (workoutId: string) => {
     const wp = progress?.workoutsProgress?.find((w) => w.workoutId === workoutId)
@@ -74,8 +87,11 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
   const handleStart = () => {
     if (!selectedId) return
     onClose()
-    navigate(`/workouts/${selectedId}`, {
-      state: { courseId: course._id, workoutIndex: workouts.findIndex((w) => w._id === selectedId) + 1 },
+    void navigate(`/workouts/${selectedId}`, {
+      state: {
+        courseId: course._id,
+        workoutIndex: workouts.findIndex((w) => w._id === selectedId) + 1,
+      },
     })
   }
 
@@ -100,7 +116,10 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           {loading ? (
             <div className="space-y-0">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-center gap-3 border-b border-[#D9D9D9]/60 p-4">
+                <div
+                  key={i}
+                  className="flex items-center gap-3 border-b border-[#D9D9D9]/60 p-4"
+                >
                   <div className="size-6 shrink-0 rounded-full border-2 border-[#D9D9D9]" />
                   <div className="h-4 w-32 animate-pulse rounded bg-[#f7f7f7]" />
                 </div>

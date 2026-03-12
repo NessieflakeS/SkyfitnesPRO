@@ -4,23 +4,62 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../components/Button'
 import { addCourseForUser, fetchCourse, type ApiCourse } from '../../shared/api/courses'
 import { useAuth } from '../../shared/auth/AuthContext'
-import { getCourseBannerImagePath } from '../../shared/config/courseImages'
-import { getCourseBannerColor, mapApiCourseToCourse } from '../../shared/mappers/courseMapper'
+import {
+  getCourseBannerImagePath,
+  getCourseCardImagePath,
+} from '../../shared/config/courseImages'
+import {
+  getCourseBannerColor,
+  mapApiCourseToCourse,
+} from '../../shared/mappers/courseMapper'
 import { useModal } from '../../shared/ui/ModalContext'
 
-function CtaRunnerImage() {
+const STRIPE_LOWER_COURSES = ['стретчинг', 'фитнес', 'йога']
+
+function GreenStripeLayer({ courseTitle = '' }: { courseTitle?: string }) {
+  const lower = STRIPE_LOWER_COURSES.includes(courseTitle.toLowerCase().trim())
+  const greenTop = lower ? '-top-[44%] sm:-top-[38%]' : '-top-[56%] sm:-top-[50%]'
   return (
-    <div className="absolute -left-[36%] top-[2%] z-10 h-[120%] w-[120%]">
+    <div className="absolute right-0 top-1/2 z-0 h-1/2 w-[55%] min-w-[200px] pointer-events-none sm:top-0 sm:h-full sm:w-[50%]">
       <img
-        src="/images/courses/cta/runner.png"
+        src="/images/courses/cta/Vector%206084.svg"
         alt=""
-        className="h-full w-full object-contain object-right-bottom"
+        className={`absolute -left-[92%] h-[170%] w-[280%] max-w-none object-contain object-left-top opacity-95 sm:-left-[78%] sm:h-[180%] sm:w-[260%] ${greenTop}`}
         aria-hidden
       />
+    </div>
+  )
+}
+
+const RUNNER_LOWER_COURSES = ['стретчинг', 'фитнес', 'йога']
+
+function CtaRunnerImage({ courseTitle = '' }: { courseTitle?: string }) {
+  const key = courseTitle.toLowerCase().trim()
+  const lowerInAdaptive = RUNNER_LOWER_COURSES.includes(key)
+  const isStretching = key === 'стретчинг'
+  const runnerTranslate = isStretching
+    ? '-translate-y-[58%] sm:-translate-y-[52%]'
+    : lowerInAdaptive
+      ? '-translate-y-[50%] sm:-translate-y-[44%]'
+      : '-translate-y-[72%] sm:-translate-y-[66%]'
+  const blackStripeTop = isStretching
+    ? '-top-[42%] sm:-top-[46%]'
+    : lowerInAdaptive
+      ? '-top-[38%] sm:-top-[42%]'
+      : '-top-[48%] sm:-top-[52%]'
+
+  return (
+    <div className="absolute inset-0">
       <img
         src="/images/courses/cta/Vector%206094.svg"
         alt=""
-        className="absolute right-[35%] top-[22%] h-10 w-auto -rotate-[7deg] sm:h-11"
+        className={`absolute right-[70%] z-[1] h-8 w-auto -rotate-[22deg] opacity-90 sm:right-[62%] sm:h-10 ${blackStripeTop}`}
+        aria-hidden
+      />
+      <img
+        src="/images/courses/cta/runner.png"
+        alt=""
+        className={`absolute top-0 right-0 z-[2] h-full max-h-[580px] w-auto object-contain object-right-top sm:top-auto sm:bottom-0 sm:max-h-[840px] sm:object-right-bottom ${runnerTranslate}`}
         aria-hidden
       />
     </div>
@@ -29,7 +68,7 @@ function CtaRunnerImage() {
 
 export function CoursePage() {
   const { courseId } = useParams()
-  useNavigate() // требуется в дереве компонентов (используется роутером)
+  useNavigate()
   const { status, user, token, refreshUser } = useAuth()
   const { openAuthModal } = useModal()
 
@@ -87,13 +126,16 @@ export function CoursePage() {
 
   const mapped = course ? mapApiCourseToCourse(course) : null
   const isOwned =
-    !!user && !!course && Array.isArray(user.selectedCourses) && user.selectedCourses.includes(course._id)
+    !!user &&
+    !!course &&
+    Array.isArray(user.selectedCourses) &&
+    user.selectedCourses.includes(course._id)
 
   const handleAddCourse = async () => {
     setAddError(null)
 
     if (status !== 'authenticated' || !token) {
-      openAuthModal(courseId ?? undefined)
+      openAuthModal(courseId)
       return
     }
 
@@ -151,21 +193,30 @@ export function CoursePage() {
 
   return (
     <div className="space-y-8 sm:space-y-10">
-      <section className={`relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl sm:min-h-[240px] sm:flex-row sm:rounded-[30px] ${bannerColor}`}>
-        <h1 className="absolute left-4 top-4 z-10 text-[60px] font-bold leading-tight tracking-tight text-white sm:left-6 sm:top-6">
-          {mapped.title}
-        </h1>
-        <div className="flex flex-1" />
-        <div className="relative h-40 shrink-0 overflow-hidden sm:h-auto sm:w-80 sm:min-h-[240px]">
+      <section className="flex justify-center">
+        <div
+          className={`relative flex h-[389px] w-full max-w-[343px] items-center justify-center overflow-hidden rounded-2xl sm:rounded-[30px] ${bannerColor}`}
+        >
+          <h1 className="absolute left-4 top-4 z-10 hidden text-[60px] font-bold leading-tight tracking-tight text-white sm:left-6 sm:top-6 sm:block">
+            {mapped.title}
+          </h1>
           <img
-            key={mapped.title}
+            key={`${mapped.title}-card`}
+            src={getCourseCardImagePath(mapped.title)}
+            alt={mapped.title}
+            className={`sm:hidden ${
+              ['степ-аэробика', 'стретчинг', 'бодифлекс', 'фитнес'].includes(
+                mapped.title.toLowerCase(),
+              )
+                ? 'absolute inset-0 h-full w-full object-cover object-top'
+                : 'max-h-full max-w-full object-contain'
+            }`}
+          />
+          <img
+            key={`${mapped.title}-banner`}
             src={getCourseBannerImagePath(mapped.title)}
             alt={mapped.title}
-            className={`absolute inset-0 h-full w-full object-cover ${mapped.title.toLowerCase() === 'йога'
-              ? 'object-[80%_0]'
-              : mapped.title.toLowerCase() === 'бодифлекс'
-                ? 'object-[72%_0]'
-                : 'object-right-top'}`}
+            className="hidden max-h-full max-w-full object-contain sm:block"
           />
         </div>
       </section>
@@ -174,11 +225,11 @@ export function CoursePage() {
         <h2 className="text-base font-semibold text-[#202020] sm:text-lg">
           Подойдет для вас, если:
         </h2>
-        <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
+        <div className="grid grid-cols-1 justify-items-center gap-3 sm:grid-cols-3 sm:gap-4">
           {fittingCards.map((text, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 rounded-2xl bg-[#2d2d2d] p-3 sm:rounded-[30px] sm:p-4"
+              className="flex h-[141px] w-full max-w-[343px] items-center gap-3 rounded-2xl bg-[#2d2d2d] p-3 sm:rounded-[30px] sm:p-4"
             >
               <span
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2d2d2d] text-lg font-bold text-[#BCEC30] sm:h-11 sm:w-11 sm:text-xl"
@@ -194,86 +245,86 @@ export function CoursePage() {
         </div>
       </section>
 
-      <section className="space-y-4">
-        <h2 className="text-base font-semibold text-[#202020] sm:text-lg">
-          Направления
-        </h2>
-        <div className="rounded-2xl bg-[#BCEC30] px-4 py-5 sm:rounded-[30px] sm:px-6 sm:py-5">
-          <div className="grid w-full grid-cols-1 gap-x-16 gap-y-9 sm:grid-cols-3 sm:gap-x-28 sm:gap-y-10">
-            {mapped.directions.map((name) => (
-              <div key={name} className="flex items-center justify-start gap-2">
-                <img
-                  src="/Icon_star.svg"
-                  alt=""
-                  className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5"
-                  width={24}
-                  height={24}
-                />
-                <span className="text-base font-medium text-[#202020] sm:text-lg">
-                  {name}
-                </span>
-              </div>
-            ))}
+      <div className="relative">
+        <GreenStripeLayer courseTitle={mapped.title} />
+        <section className="relative z-[2] space-y-4">
+          <h2 className="text-base font-semibold text-[#202020] sm:text-lg">
+            Направления
+          </h2>
+          <div className="h-[336px] w-full max-w-[343px] rounded-2xl bg-[#BCEC30] px-4 py-5 sm:rounded-[30px] sm:px-6 sm:py-5">
+            <div className="grid h-full w-full grid-cols-1 grid-rows-auto gap-x-16 gap-y-6 content-start sm:grid-cols-3 sm:gap-x-28 sm:gap-y-6">
+              {mapped.directions.map((name) => (
+                <div key={name} className="flex items-center justify-start gap-2">
+                  <img
+                    src="/Icon_star.svg"
+                    alt=""
+                    className="h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5"
+                    width={24}
+                    height={24}
+                    aria-hidden
+                  />
+                  <span className="text-base font-medium text-[#202020] sm:text-lg">
+                    {name}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="overflow-visible rounded-2xl border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
-        <div className="flex flex-col sm:flex-row">
-          <div className="flex min-w-0 flex-[2] flex-col justify-center gap-3 p-5 sm:gap-4 sm:p-6 md:p-8">
-            <h2 className="text-[40px] font-bold leading-tight text-[#202020] sm:text-[44px]">
-              Начните путь
-              <br />
-              к новому телу
-            </h2>
-            {ctaBullets.length > 0 ? (
-              <ul className="list-disc space-y-1.5 pl-4 text-xs text-[#202020] sm:text-sm">
-                {ctaBullets.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-xs leading-6 text-[#202020]/90 sm:text-sm">
-                {mapped.description}
-              </p>
-            )}
-            <div className="mt-1">
-              {isOwned ? (
-                <Button disabled>
-                  Добавлен
-                </Button>
+        <section className="relative z-[15] mt-[155px] overflow-visible rounded-2xl border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex min-w-0 flex-[2] flex-col justify-center gap-3 p-5 sm:gap-4 sm:p-6 md:p-8">
+              <h2 className="text-[40px] font-bold leading-tight text-[#202020] sm:text-[44px]">
+                Начните путь
+                <br />к новому телу
+              </h2>
+              {ctaBullets.length > 0 ? (
+                <ul className="list-[disc] space-y-1.5 pl-4 text-xs text-[#202020] sm:text-sm [&_li]:marker:text-black">
+                  {ctaBullets.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
               ) : (
-                <Button
-                  onClick={() =>
-                    status === 'authenticated'
-                      ? void handleAddCourse()
-                      : openAuthModal(courseId ?? undefined)
-                  }
-                  disabled={adding}
-                >
-                  {status === 'authenticated'
-                    ? 'Добавить курс'
-                    : 'Войдите, чтобы добавить курс'}
-                </Button>
+                <p className="text-xs leading-6 text-[#202020]/90 sm:text-sm">
+                  {mapped.description}
+                </p>
               )}
+              <div className="mt-3">
+                {isOwned ? (
+                  <Button disabled fullWidth className="sm:w-auto">
+                    Добавлен
+                  </Button>
+                ) : (
+                  <Button
+                    fullWidth
+                    className="sm:w-auto"
+                    onClick={() =>
+                      status === 'authenticated'
+                        ? void handleAddCourse()
+                        : openAuthModal(courseId)
+                    }
+                    disabled={adding}
+                  >
+                    {status === 'authenticated'
+                      ? 'Добавить курс'
+                      : 'Войдите, чтобы добавить курс'}
+                  </Button>
+                )}
+              </div>
+              {addError && <p className="text-xs text-rose-600">{addError}</p>}
             </div>
-            {addError && (
-              <p className="text-xs text-rose-600">{addError}</p>
-            )}
+            <div
+              className="relative min-h-[260px] shrink-0 flex-[3] overflow-visible sm:min-h-[300px] md:min-h-[340px]"
+              aria-hidden
+            />
           </div>
-          <div className="relative flex-[3] shrink-0 overflow-visible h-[260px] sm:h-[300px] md:h-[340px]">
-            <div className="absolute inset-0 origin-bottom scale-[1.12] translate-y-6">
-              <img
-                src="/images/courses/cta/Vector%206084.svg"
-                alt=""
-                className="absolute -bottom-24 left-0 z-0 w-full max-w-[115%] object-contain object-left-bottom opacity-90"
-                aria-hidden
-              />
-              <CtaRunnerImage />
-            </div>
-          </div>
+        </section>
+
+        <div className="pointer-events-none absolute right-0 top-1/2 z-10 h-1/2 w-[55%] min-w-[200px] sm:top-0 sm:h-full sm:w-[50%]">
+          <CtaRunnerImage courseTitle={mapped.title} />
         </div>
-      </section>
+      </div>
     </div>
   )
 }

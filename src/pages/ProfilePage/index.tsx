@@ -14,8 +14,7 @@ import { useAuth } from '../../shared/auth/AuthContext'
 import { getCourseCardImagePath } from '../../shared/config/courseImages'
 import { getCourseBannerColor } from '../../shared/mappers/courseMapper'
 
-
-
+/* eslint-disable @typescript-eslint/no-unnecessary-condition -- defensive checks for API/state timing */
 const IconCalendar = () => (
   <svg
     className="size-[18px] shrink-0 text-[#202020]"
@@ -45,21 +44,12 @@ const IconClock = () => (
 )
 
 const IconSignal = () => (
-  <svg className="size-[18px] shrink-0 text-[#202020]" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 20h4V10H2v10zm6 0h4V4H8v16zm6 0h4v-7h-4v7zm6 0h4V2h-4v18z" />
-  </svg>
-)
-
-const IconWave = () => (
   <svg
-    className="size-4 shrink-0 text-[#202020]"
+    className="size-[18px] shrink-0 text-[#202020]"
     viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
+    fill="currentColor"
   >
-    <path d="M2 12c0 0 3-6 10-6s10 6 10 6-3 6-10 6-10-6-10-6z" />
-    <path d="M2 12c0 0 3 6 10 6s10-6 10-6" />
+    <path d="M2 20h4V10H2v10zm6 0h4V4H8v16zm6 0h4v-7h-4v7zm6 0h4V2h-4v18z" />
   </svg>
 )
 
@@ -76,9 +66,9 @@ const IconPerson = () => (
   </svg>
 )
 
-const IconMinus = () => (
+const IconMinus = ({ className }: { className?: string }) => (
   <svg
-    className="size-4"
+    className={className ?? 'size-4'}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -113,7 +103,7 @@ function RemoveCourseButton({
         onMouseLeave={() => setShowTooltip(false)}
         onFocus={() => setShowTooltip(true)}
         onBlur={() => setShowTooltip(false)}
-        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/90 text-[#202020] shadow hover:bg-white disabled:opacity-50 sm:size-9"
+        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-[#202020] shadow hover:bg-white disabled:opacity-50 sm:size-9"
         title="Удалить курс"
         aria-label="Удалить курс"
       >
@@ -160,7 +150,8 @@ export function ProfilePage() {
       .then((all) => {
         if (cancelled) return
         const owned = all.filter(
-          (c) => Array.isArray(user.selectedCourses) && user.selectedCourses.includes(c._id),
+          (c) =>
+            Array.isArray(user.selectedCourses) && user.selectedCourses.includes(c._id),
         )
         setCourses(owned)
         setLoading(false)
@@ -186,7 +177,9 @@ export function ProfilePage() {
         try {
           const p = await fetchCourseProgress(course._id, token)
           if (!cancelled) next[course._id] = p
-        } catch {}
+        } catch {
+          void 0
+        }
       }
       if (!cancelled) setProgressMap((prev) => ({ ...prev, ...next }))
     }
@@ -214,7 +207,10 @@ export function ProfilePage() {
     setResettingId(courseId)
     try {
       await resetCourseProgress(courseId, token)
-      setProgressMap((prev) => ({ ...prev, [courseId]: { courseId, workoutsProgress: [] } }))
+      setProgressMap((prev) => ({
+        ...prev,
+        [courseId]: { courseId, workoutsProgress: [] },
+      }))
     } catch {
       setError('Не удалось сбросить прогресс')
     } finally {
@@ -227,32 +223,32 @@ export function ProfilePage() {
     void navigate('/')
   }, [logout, navigate])
 
-  if (!user) {
-    return null
-  }
+  if (!user) return null
 
   const displayName = user.email?.split('@')[0] ?? 'Пользователь'
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-xl font-bold tracking-tight text-[#202020] sm:text-2xl">
+    <div className="space-y-6 sm:space-y-8">
+      <h1 className="text-center text-xl font-bold tracking-tight text-[#202020] sm:text-left sm:text-2xl">
         Профиль
       </h1>
 
-      <section className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-          <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-[#e5e5e5] sm:size-20">
+      <section className="rounded-2xl border border-[#D9D9D9] bg-white p-6 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <div className="flex size-20 shrink-0 items-center justify-center rounded-full bg-[#e5e5e5] sm:size-20">
             <IconPerson />
           </div>
-          <div className="min-w-0 flex-1 space-y-1">
+          <div className="min-w-0 flex-1 space-y-1 text-center sm:text-left">
             <div className="truncate text-lg font-bold text-[#202020] sm:text-xl">
               {displayName}
             </div>
-            <div className="truncate text-sm text-[#202020]/70">
-              Логин: {user.email}
-            </div>
-            <div className="pt-1">
-              <Button variant="secondary" onClick={handleLogout} className="sm:shrink-0">
+            <div className="truncate text-sm text-[#202020]/70">Логин: {user.email}</div>
+            <div className="pt-2 sm:pt-1">
+              <Button
+                variant="secondary"
+                onClick={handleLogout}
+                className="w-full border-2 border-[#202020] bg-white text-[#202020] hover:bg-[#f7f7f7] sm:w-auto"
+              >
                 Выйти
               </Button>
             </div>
@@ -269,7 +265,8 @@ export function ProfilePage() {
           </div>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {}
           {loading &&
             Array.from({ length: 3 }).map((_, index) => (
               <div
@@ -281,13 +278,15 @@ export function ProfilePage() {
           {!loading &&
             courses.map((course) => {
               const progress = progressMap[course._id]
-              const courseWorkoutIds = course.workouts ?? []
+              const courseWorkoutIds = course.workouts
               const total = courseWorkoutIds.length
-              const completed =
+
+              const completed = (
                 progress?.workoutsProgress?.filter(
                   (w) =>
                     w.workoutCompleted === true && courseWorkoutIds.includes(w.workoutId),
-                ).length ?? 0
+                ) ?? []
+              ).length
               const percent = total > 0 ? Math.round((completed / total) * 100) : 0
 
               const buttonText =
@@ -309,16 +308,21 @@ export function ProfilePage() {
               return (
                 <article
                   key={course._id}
-                  className="relative overflow-hidden rounded-2xl bg-white pb-[15px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)] sm:rounded-[30px]"
+                  className="relative flex h-[492px] w-full max-w-[343px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)] sm:rounded-[30px]"
                 >
-                  <div className="relative h-36 overflow-hidden sm:h-44 md:h-52 lg:h-[260px]">
-                    <div className={`absolute inset-0 ${getCourseBannerColor(course.nameRU)}`} aria-hidden />
+                  <div className="relative min-h-0 flex-1 overflow-hidden rounded-t-2xl sm:rounded-t-[30px]">
+                    <div
+                      className={`absolute inset-0 ${getCourseBannerColor(course.nameRU)}`}
+                      aria-hidden
+                    />
                     <img
                       key={course._id}
                       src={getCourseCardImagePath(course.nameRU)}
                       alt={course.nameRU}
-                      className="absolute inset-0 h-full w-full object-cover"
-                      onError={(e) => { e.currentTarget.style.display = 'none' }}
+                      className="absolute inset-0 h-full w-full rounded-t-2xl object-cover sm:rounded-t-[30px]"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
                     />
                     <div className="absolute right-2 top-2 z-10 sm:right-3 sm:top-3">
                       <RemoveCourseButton
@@ -328,45 +332,43 @@ export function ProfilePage() {
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 px-4 pt-4 sm:gap-2 sm:px-5 sm:pt-5 md:px-6 lg:px-[30px] lg:pt-5">
-                    <h3 className="text-xl font-medium leading-[1.1] text-black sm:text-2xl md:text-[32px]">
+                  <div className="shrink-0 px-4 pb-4 pt-4 sm:px-5 sm:pt-5">
+                    <h3 className="text-xl font-bold leading-tight text-black sm:text-2xl">
                       {course.nameRU}
                     </h3>
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2.5 sm:text-[16px]">
+                    <div className="mt-2 flex flex-wrap gap-1.5 sm:gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2 sm:text-sm">
                         <IconCalendar />
                         {course.durationInDays} дней
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2.5 sm:text-[16px]">
+                      <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2 sm:text-sm">
                         <IconClock />
                         {course.dailyDurationInMinutes.from}–
                         {course.dailyDurationInMinutes.to} мин/день
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2.5 sm:text-[16px]">
+                      <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2 sm:text-sm">
                         <IconSignal />
                         {course.difficulty}
                       </span>
                     </div>
-                    <div className="mt-3 space-y-1">
-                      <div className="flex justify-between text-xs text-[#202020]">
-                        <span>Прогресс</span>
-                        <span>
-                          {completed} из {total} ({percent}%)
-                        </span>
+                    <div className="mt-3 space-y-1.5">
+                      <div className="text-sm font-medium text-[#202020]">
+                        Прогресс {String(percent)}%
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-[#e5e7eb]">
                         <div
                           className="h-full rounded-full bg-[#3b82f6] transition-all"
-                          style={{ width: `${percent}%` }}
+                          style={{ width: `${String(percent)}%` }}
                         />
                       </div>
                     </div>
                     <Button
                       fullWidth
+                      className="mt-3"
                       onClick={() => void handleCardAction()}
                       disabled={
                         (percent === 100 && resettingId === course._id) ||
-                        (percent < 100 && !course.workouts?.length)
+                        (percent < 100 && !course.workouts.length)
                       }
                     >
                       {percent === 100 && resettingId === course._id

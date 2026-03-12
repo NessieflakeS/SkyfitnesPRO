@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { addCourseForUser } from '../../shared/api/courses'
-import { getCourseCardImagePath } from '../../shared/config/courseImages'
 import { useAuth } from '../../shared/auth/AuthContext'
+import { getCourseCardImagePath } from '../../shared/config/courseImages'
 import { getCourseLevelLabel } from '../../shared/mock/courses'
 import { useModal } from '../../shared/ui/ModalContext'
 
@@ -36,7 +36,11 @@ const IconClock = () => (
   </svg>
 )
 const IconSignal = () => (
-  <svg className="size-[18px] shrink-0 text-[#202020]" viewBox="0 0 24 24" fill="currentColor">
+  <svg
+    className="size-[18px] shrink-0 text-[#202020]"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
     <path d="M2 20h4V10H2v10zm6 0h4V4H8v16zm6 0h4v-7h-4v7zm6 0h4V2h-4v18z" />
   </svg>
 )
@@ -56,7 +60,7 @@ function AddCourseButton({ courseId }: { courseId: string }) {
     setAdding(true)
     addCourseForUser(courseId, token)
       .then(() => refreshUser())
-      .catch((err) => {
+      .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : ''
         if (msg.includes('Курс уже был добавлен')) void refreshUser()
       })
@@ -68,16 +72,11 @@ function AddCourseButton({ courseId }: { courseId: string }) {
       type="button"
       onClick={handleClick}
       disabled={adding}
-      className="absolute right-2 top-2 z-10 flex size-6 shrink-0 items-center justify-center rounded-full sm:right-3 sm:top-3 sm:size-7"
+      className="absolute right-2 top-2 z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-transparent"
       title="Добавить курс"
       aria-label="Добавить курс"
     >
-      <img
-        src="/Icon_plus.svg"
-        alt=""
-        className="size-full object-contain"
-        aria-hidden
-      />
+      <img src="/Icon_plus.svg" alt="" className="size-full object-contain" aria-hidden />
     </button>
   )
 }
@@ -88,35 +87,37 @@ type Props = {
 
 export function CourseCard({ course }: Props) {
   return (
-    <article className="relative overflow-hidden rounded-2xl bg-white pb-[15px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)] sm:rounded-[30px]">
-      <Link
-        to={`/courses/${course.id}`}
-        className="block"
-      >
-        <div className="relative h-36 overflow-hidden sm:h-44 md:h-52 lg:h-[260px]">
-          <div className={`absolute inset-0 bg-gradient-to-br ${course.coverColor}`} aria-hidden />
+    <article className="relative flex h-[492px] w-full max-w-[343px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)] sm:rounded-[30px]">
+      <Link to={`/courses/${course.id}`} className="flex min-h-0 flex-1 flex-col">
+        <div className="relative min-h-0 flex-1 overflow-hidden rounded-t-2xl sm:rounded-t-[30px]">
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${course.coverColor}`}
+            aria-hidden
+          />
           <img
             key={course.id}
             src={getCourseCardImagePath(course.title)}
             alt={course.title}
-            className="absolute inset-0 h-full w-full object-cover"
-            onError={(e) => { e.currentTarget.style.display = 'none' }}
+            className="absolute inset-0 h-full w-full rounded-t-2xl object-cover sm:rounded-t-[30px]"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
           />
         </div>
-        <div className="flex flex-col gap-2 px-4 pt-4 sm:gap-2 sm:px-5 sm:pt-5 md:px-6 lg:px-[30px] lg:pt-5">
-          <h3 className="text-xl font-medium leading-[1.1] text-black sm:text-2xl md:text-[32px]">
+        <div className="shrink-0 px-4 pb-4 pt-4 sm:px-5 sm:pt-5">
+          <h3 className="text-xl font-bold leading-tight text-black sm:text-2xl">
             {course.title}
           </h3>
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2.5 sm:text-[16px]">
+          <div className="mt-2 flex flex-wrap gap-1.5 sm:gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2 sm:text-sm">
               <IconCalendar />
               {course.durationDays} дней
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2.5 sm:text-[16px]">
+            <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2 sm:text-sm">
               <IconClock />
               {course.dailyMinutesFrom}-{course.dailyMinutesTo} мин/день
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2.5 sm:text-[16px]">
+            <span className="inline-flex items-center gap-1.5 rounded-[50px] bg-[#f7f7f7] px-2 py-1.5 text-xs font-normal text-[#202020] sm:gap-2 sm:px-[10px] sm:py-2 sm:text-sm">
               <IconSignal />
               {getCourseLevelLabel(course.level)}
             </span>

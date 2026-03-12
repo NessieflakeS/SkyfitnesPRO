@@ -179,6 +179,7 @@ export function WorkoutPage() {
 
   const hasNoExercises = workout.exercises.length === 0
   const hasAnyProgress = workout.exercises.some(
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- quantity can be undefined
     (ex, idx) => (progress[idx] ?? 0) > 0 && (ex.quantity ?? 0) > 0,
   )
 
@@ -202,7 +203,9 @@ export function WorkoutPage() {
         {showSavedOverlay && (
           <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/20 sm:rounded-[30px]">
             <div className="rounded-2xl bg-white px-6 py-5 shadow-xl">
-              <p className="text-center font-bold text-[#202020]">Ваш прогресс засчитан!</p>
+              <p className="text-center font-bold text-[#202020]">
+                Ваш прогресс засчитан!
+              </p>
               <div className="mt-3 flex justify-center">
                 <span className="flex size-10 items-center justify-center rounded-full bg-[#BCEC30]">
                   <svg
@@ -223,12 +226,13 @@ export function WorkoutPage() {
 
       <section className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
         <h2 className="text-lg font-bold text-[#202020] sm:text-xl">
-          Упражнения тренировки{workoutIndex ? ` ${workoutIndex}` : ''}
+          Упражнения тренировки{workoutIndex != null ? ` ${String(workoutIndex)}` : ''}
         </h2>
         {hasNoExercises ? (
           <div className="mt-4">
             <p className="text-sm text-[#202020]/80">
-              В этом уроке нет упражнений с повторениями. Отметьте урок как пройденный, чтобы зафиксировать прохождение в курсе.
+              В этом уроке нет упражнений с повторениями. Отметьте урок как пройденный,
+              чтобы зафиксировать прохождение в курсе.
             </p>
             <div className="mt-6">
               <Button
@@ -238,9 +242,7 @@ export function WorkoutPage() {
               >
                 {markingComplete ? 'Сохранение…' : 'Отметить урок пройденным'}
               </Button>
-              {markError && (
-                <p className="mt-2 text-sm text-rose-600">{markError}</p>
-              )}
+              {markError && <p className="mt-2 text-sm text-rose-600">{markError}</p>}
             </div>
           </div>
         ) : (
@@ -253,12 +255,12 @@ export function WorkoutPage() {
                 return (
                   <div key={ex._id} className="space-y-1">
                     <div className="text-sm font-medium text-[#202020]">
-                      {ex.name} {percent}%
+                      {ex.name} {String(percent)}%
                     </div>
                     <div className="h-1 overflow-hidden rounded-full bg-[#e5e7eb]">
                       <div
                         className="h-full rounded-full bg-[#3b82f6] transition-all"
-                        style={{ width: `${Math.min(percent, 100)}%` }}
+                        style={{ width: `${String(Math.min(percent, 100))}%` }}
                       />
                     </div>
                   </div>
@@ -266,7 +268,11 @@ export function WorkoutPage() {
               })}
             </div>
             <div className="mt-6">
-              <Button fullWidth onClick={() => setProgressModalOpen(true)} disabled={!courseId}>
+              <Button
+                fullWidth
+                onClick={() => setProgressModalOpen(true)}
+                disabled={!courseId}
+              >
                 {hasAnyProgress ? 'Обновить свой прогресс' : 'Заполнить свой прогресс'}
               </Button>
             </div>

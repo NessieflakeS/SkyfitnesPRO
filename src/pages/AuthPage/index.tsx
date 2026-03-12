@@ -70,7 +70,9 @@ export function AuthPage() {
       }
 
       void navigate('/', { replace: true })
-    } catch {}
+    } catch {
+      setLocalError(mode === 'login' ? 'Ошибка входа' : 'Ошибка регистрации')
+    }
   }
 
   return (

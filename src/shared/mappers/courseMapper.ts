@@ -1,7 +1,6 @@
 import type { ApiCourse } from '../api/courses'
 import type { Course } from '../types/fitness'
 
-/** Цвета фона баннера — по макетам */
 const BANNER_COLORS: Record<string, string> = {
   йога: 'bg-[#FFC700]',
   стретчинг: 'bg-[#2491D2]',

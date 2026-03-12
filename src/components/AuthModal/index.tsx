@@ -81,10 +81,12 @@ export function AuthModal() {
     }
 
     try {
-      const newToken =
-        mode === 'login'
-          ? await login(trimmedEmail, trimmedPassword)
-          : await register(trimmedEmail, trimmedPassword)
+      let newToken: string | null = null
+      if (mode === 'login') {
+        newToken = await login(trimmedEmail, trimmedPassword)
+      } else {
+        newToken = await register(trimmedEmail, trimmedPassword)
+      }
 
       if (pendingCourseId && newToken) {
         try {
@@ -138,7 +140,8 @@ export function AuthModal() {
           <form
             onSubmit={(e) => {
               e.preventDefault()
-              void handleSubmit(e)
+              const p = handleSubmit(e)
+              void p
             }}
             className="flex w-full flex-col items-stretch gap-4"
             autoComplete="on"

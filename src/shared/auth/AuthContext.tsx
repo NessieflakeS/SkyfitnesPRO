@@ -9,7 +9,9 @@ import {
 } from 'react'
 
 import { getCurrentUser, login as apiLogin, register as apiRegister } from '../api/auth'
+
 import { readStoredAuth, writeStoredAuth } from './storage'
+
 import type { ApiError } from '../api/client'
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated'
@@ -23,8 +25,8 @@ type AuthContextValue = {
   status: AuthStatus
   user: AuthUser | null
   token: string | null
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<string | null>
+  register: (email: string, password: string) => Promise<string | null>
   logout: () => void
   refreshUser: () => Promise<void>
   lastError: string | null

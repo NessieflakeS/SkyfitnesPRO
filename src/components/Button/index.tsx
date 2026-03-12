@@ -16,8 +16,7 @@ const variantClass: Record<Variant, string> = {
     'rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]',
   secondary:
     'rounded-[46px] bg-[#f7f7f7] px-4 py-3 text-base font-normal text-[#202020] hover:bg-[#e5e5e5] sm:px-6 sm:py-4 sm:text-[18px]',
-  ghost:
-    'rounded-xl bg-transparent px-4 py-2 text-sm text-[#202020] hover:bg-[#f7f7f7]',
+  ghost: 'rounded-xl bg-transparent px-4 py-2 text-sm text-[#202020] hover:bg-[#f7f7f7]',
 }
 
 export function Button({
