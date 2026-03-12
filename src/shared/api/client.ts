@@ -30,16 +30,27 @@ async function request<TResponse>(
   })
 
   const text = await response.text()
-  const data = text ? (JSON.parse(text) as unknown) : null
+  let data: unknown = null
+  try {
+    data = text ? (JSON.parse(text) as unknown) : null
+  } catch {
+    data = { raw: text }
+  }
 
   if (!response.ok) {
+    const method = options.method ?? 'GET'
+    if (import.meta.env.DEV) {
+      console.error('[API Error]', method, path, '→', response.status)
+      console.error('[API Error] response body:', typeof data === 'object' && data !== null ? JSON.stringify(data, null, 2) : data)
+    }
+
+    const obj = data && typeof data === 'object' ? (data as Record<string, unknown>) : null
     const message =
-      (data &&
-        typeof data === 'object' &&
-        'message' in data &&
-        typeof (data as { message?: string }).message === 'string' &&
-        (data as { message: string }).message) ??
-      'Произошла ошибка при запросе'
+      (typeof obj?.message === 'string' && obj.message) ||
+      (typeof obj?.error === 'string' && obj.error) ||
+      (response.status >= 500
+        ? 'Ошибка сервера. Откройте консоль браузера (F12) для деталей.'
+        : 'Произошла ошибка при запросе')
 
     const error = new Error(message) as Error & ApiError
     error.status = response.status

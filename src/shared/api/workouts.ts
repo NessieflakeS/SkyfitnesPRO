@@ -25,8 +25,8 @@ export type CourseProgress = {
   workoutsProgress?: WorkoutProgress[]
 }
 
-export function fetchWorkout(workoutId: string) {
-  return apiClient.get<ApiWorkout>(`/workouts/${workoutId}`)
+export function fetchWorkout(workoutId: string, token?: string | null) {
+  return apiClient.get<ApiWorkout>(`/workouts/${workoutId}`, token)
 }
 
 export function fetchCourseProgress(courseId: string, token: string) {

@@ -26,6 +26,7 @@ type AuthContextValue = {
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string) => Promise<void>
   logout: () => void
+  refreshUser: () => Promise<void>
   lastError: string | null
   clearError: () => void
 }
@@ -131,6 +132,20 @@ export function AuthProvider({ children }: Props) {
     setLastError(null)
   }, [])
 
+  const refreshUser = useCallback(async () => {
+    const t = readStoredAuth()?.token
+    if (!t) return
+    try {
+      const current = await getCurrentUser(t)
+      setUser(current)
+    } catch {
+      setUser(null)
+      setToken(null)
+      writeStoredAuth(null)
+      setStatus('unauthenticated')
+    }
+  }, [])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -139,10 +154,11 @@ export function AuthProvider({ children }: Props) {
       login,
       register,
       logout,
+      refreshUser,
       lastError,
       clearError,
     }),
-    [status, user, token, login, register, logout, lastError, clearError],
+    [status, user, token, login, register, logout, refreshUser, lastError, clearError],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

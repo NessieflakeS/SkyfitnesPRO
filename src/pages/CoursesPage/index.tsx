@@ -30,10 +30,9 @@ export function CoursesPage() {
   return (
     <div className="space-y-6 sm:space-y-10">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <h1 className="max-w-[947px] text-2xl font-medium leading-tight text-black sm:text-[40px] sm:leading-none lg:text-[60px] lg:leading-none">
-          Начните заниматься спортом
-          <br />
-          и улучшите качество жизни
+        <h1 className="max-w-[947px] text-[56px] font-medium leading-tight text-black">
+          <span className="block whitespace-nowrap">Начните заниматься спортом</span>
+          <span className="block">и улучшите качество жизни</span>
         </h1>
         <div className="relative w-full shrink-0 sm:w-auto">
           <div className="rounded-[5px] bg-[#BCEC30] px-5 py-4">

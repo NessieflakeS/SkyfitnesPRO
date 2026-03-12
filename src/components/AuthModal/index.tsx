@@ -125,20 +125,14 @@ export function AuthModal() {
         </button>
 
         <div className="flex flex-col items-center px-8 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-8">
-          <div className="mb-6 flex items-center gap-2 sm:mb-8">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
-              <svg
-                className="size-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-            <span className="text-base font-semibold text-black">
-              SkyFitnessPro
-            </span>
+          <div className="mb-6 flex items-center justify-center sm:mb-8">
+            <img
+              src="/logo.png"
+              alt="SkyFitnessPro"
+              className="h-9 w-auto"
+              width={40}
+              height={36}
+            />
           </div>
 
           <form
@@ -147,6 +141,7 @@ export function AuthModal() {
               void handleSubmit(e)
             }}
             className="flex w-full flex-col items-stretch gap-4"
+            autoComplete="on"
           >
             <div className="space-y-2">
               <label
@@ -158,8 +153,9 @@ export function AuthModal() {
               <input
                 id={`${formId}-email`}
                 type="email"
+                name="email"
                 placeholder="user@example.com"
-                autoComplete={mode === 'login' ? 'email' : 'email'}
+                autoComplete="email"
                 className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -176,6 +172,7 @@ export function AuthModal() {
               <input
                 id={`${formId}-password`}
                 type="password"
+                name="password"
                 placeholder="••••••••"
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
@@ -195,6 +192,7 @@ export function AuthModal() {
                 <input
                   id={`${formId}-password-repeat`}
                   type="password"
+                  name="passwordRepeat"
                   placeholder="••••••••"
                   autoComplete="new-password"
                   className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"

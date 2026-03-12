@@ -1,10 +1,11 @@
-import { useId, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { addCourseForUser } from '../../shared/api/courses'
+import { getCourseCardImagePath } from '../../shared/config/courseImages'
 import { useAuth } from '../../shared/auth/AuthContext'
-import { useModal } from '../../shared/ui/ModalContext'
 import { getCourseLevelLabel } from '../../shared/mock/courses'
+import { useModal } from '../../shared/ui/ModalContext'
 
 import type { Course } from '../../shared/types/fitness'
 
@@ -40,8 +41,8 @@ const IconSignal = () => (
   </svg>
 )
 
-function AddCourseButton({ courseId, maskId }: { courseId: string; maskId: string }) {
-  const { status, token } = useAuth()
+function AddCourseButton({ courseId }: { courseId: string }) {
+  const { status, token, refreshUser } = useAuth()
   const { openAuthModal } = useModal()
   const [adding, setAdding] = useState(false)
 
@@ -54,7 +55,11 @@ function AddCourseButton({ courseId, maskId }: { courseId: string; maskId: strin
     }
     setAdding(true)
     addCourseForUser(courseId, token)
-      .catch(() => {})
+      .then(() => refreshUser())
+      .catch((err) => {
+        const msg = err instanceof Error ? err.message : ''
+        if (msg.includes('Курс уже был добавлен')) void refreshUser()
+      })
       .finally(() => setAdding(false))
   }
 
@@ -67,29 +72,12 @@ function AddCourseButton({ courseId, maskId }: { courseId: string; maskId: strin
       title="Добавить курс"
       aria-label="Добавить курс"
     >
-      <svg
-        className="size-full"
-        viewBox="0 0 24 24"
-        fill="none"
+      <img
+        src="/Icon_plus.svg"
+        alt=""
+        className="size-full object-contain"
         aria-hidden
-      >
-        <defs>
-          <mask id={maskId}>
-            <circle cx="12" cy="12" r="12" fill="white" />
-            <path
-              d="M11 5h2v14h-2zM5 11h14v2H5z"
-              fill="black"
-            />
-          </mask>
-        </defs>
-        <circle
-          cx="12"
-          cy="12"
-          r="12"
-          fill="#BCEC30"
-          mask={`url(#${maskId})`}
-        />
-      </svg>
+      />
     </button>
   )
 }
@@ -99,18 +87,20 @@ type Props = {
 }
 
 export function CourseCard({ course }: Props) {
-  const maskId = useId().replace(/:/g, '-')
-
   return (
     <article className="relative overflow-hidden rounded-2xl bg-white pb-[15px] shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)] sm:rounded-[30px]">
       <Link
         to={`/courses/${course.id}`}
         className="block"
       >
-        <div className="relative h-36 sm:h-44 md:h-52 lg:h-[260px]">
-          <div
-            className={`absolute inset-0 bg-gradient-to-br ${course.coverColor}`}
-            aria-hidden
+        <div className="relative h-36 overflow-hidden sm:h-44 md:h-52 lg:h-[260px]">
+          <div className={`absolute inset-0 bg-gradient-to-br ${course.coverColor}`} aria-hidden />
+          <img
+            key={course.id}
+            src={getCourseCardImagePath(course.title)}
+            alt={course.title}
+            className="absolute inset-0 h-full w-full object-cover"
+            onError={(e) => { e.currentTarget.style.display = 'none' }}
           />
         </div>
         <div className="flex flex-col gap-2 px-4 pt-4 sm:gap-2 sm:px-5 sm:pt-5 md:px-6 lg:px-[30px] lg:pt-5">
@@ -133,7 +123,7 @@ export function CourseCard({ course }: Props) {
           </div>
         </div>
       </Link>
-      <AddCourseButton courseId={course.id} maskId={maskId} />
+      <AddCourseButton courseId={course.id} />
     </article>
   )
 }

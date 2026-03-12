@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import {
   fetchCourseWorkouts,
@@ -16,19 +16,43 @@ type Props = {
   onClose: () => void
 }
 
+const IconCheck = ({ className }: { className?: string }) => (
+  <svg className={cn('size-5', className)} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <path d="M5 12l5 5L20 7" />
+  </svg>
+)
+
 export function WorkoutSelectionModal({ course, token, onClose }: Props) {
+  const navigate = useNavigate()
   const [workouts, setWorkouts] = useState<ApiWorkoutShort[]>([])
   const [progress, setProgress] = useState<CourseProgress | null>(null)
   const [loading, setLoading] = useState(true)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!token) {
+      setLoading(false)
+      setWorkouts([])
+      return
+    }
     let cancelled = false
     setLoading(true)
-    Promise.all([fetchCourseWorkouts(course._id), fetchCourseProgress(course._id, token)])
+    Promise.all([fetchCourseWorkouts(course._id, token), fetchCourseProgress(course._id, token)])
       .then(([workoutsData, progressData]) => {
         if (cancelled) return
-        setWorkouts(workoutsData)
-        setProgress(progressData)
+        const list = workoutsData ?? []
+        const orderIds = course.workouts ?? []
+        const ordered = list.slice().sort((a, b) => {
+          const i = orderIds.indexOf(a._id)
+          const j = orderIds.indexOf(b._id)
+          return (i === -1 ? 999 : i) - (j === -1 ? 999 : j)
+        })
+        setWorkouts(ordered)
+        setProgress(progressData ?? null)
+        const firstIncomplete = ordered.find(
+          (w) => !progressData?.workoutsProgress?.find((p) => p.workoutId === w._id)?.workoutCompleted,
+        )
+        setSelectedId(firstIncomplete?._id ?? ordered[0]?._id ?? null)
       })
       .catch(() => {
         if (cancelled) return
@@ -47,14 +71,21 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
     return wp?.workoutCompleted ?? false
   }
 
+  const handleStart = () => {
+    if (!selectedId) return
+    onClose()
+    navigate(`/workouts/${selectedId}`, {
+      state: { courseId: course._id, workoutIndex: workouts.findIndex((w) => w._id === selectedId) + 1 },
+    })
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-      <div className="relative w-full max-h-[85vh] max-w-lg rounded-t-2xl border border-[#D9D9D9] bg-white shadow-xl sm:max-h-none sm:rounded-[30px]">
+      <div className="relative flex w-full max-w-lg flex-col rounded-t-2xl border border-[#D9D9D9] bg-white shadow-xl sm:max-h-[85vh] sm:rounded-[30px]">
         <div className="border-b border-[#D9D9D9] p-4 sm:p-6">
-          <h2 className="pr-8 text-lg font-bold text-[#202020] sm:text-xl">
-            Тренировки курса
+          <h2 className="text-center text-lg font-bold text-[#202020] sm:text-xl">
+            Выберите тренировку
           </h2>
-          <p className="mt-1 text-sm text-[#202020]/70">{course.nameRU}</p>
           <button
             type="button"
             onClick={onClose}
@@ -65,39 +96,49 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           </button>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto p-4 sm:p-6">
+        <div className="max-h-[50vh] overflow-y-auto sm:max-h-[60vh]">
           {loading ? (
-            <div className="space-y-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-14 animate-pulse rounded-xl bg-[#f7f7f7]" />
+            <div className="space-y-0">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center gap-3 border-b border-[#D9D9D9]/60 p-4">
+                  <div className="size-6 shrink-0 rounded-full border-2 border-[#D9D9D9]" />
+                  <div className="h-4 w-32 animate-pulse rounded bg-[#f7f7f7]" />
+                </div>
               ))}
             </div>
           ) : (
-            <ul className="space-y-2">
-              {workouts.map((workout) => {
+            <ul className="divide-y divide-[#D9D9D9]/60">
+              {workouts.map((workout, index) => {
                 const completed = getWorkoutStatus(workout._id)
+                const selected = selectedId === workout._id
+                const showCheck = completed || selected
                 return (
                   <li key={workout._id}>
-                    <Link
-                      to={`/workouts/${workout._id}`}
-                      state={{ courseId: course._id }}
-                      onClick={onClose}
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-[#D9D9D9] bg-white p-4 text-left shadow-sm transition-colors hover:bg-[#f7f7f7]"
+                    <button
+                      type="button"
+                      onClick={() => setSelectedId(workout._id)}
+                      className={cn(
+                        'flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-[#f7f7f7]',
+                        selected && 'bg-[#f7f7f7]',
+                      )}
                     >
-                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-[#202020]">
-                        {workout.name}
-                      </span>
                       <span
                         className={cn(
-                          'shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium',
-                          completed
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-[#f7f7f7] text-[#202020]/70',
+                          'flex size-6 shrink-0 items-center justify-center rounded-full border-2',
+                          showCheck
+                            ? 'border-[#BCEC30] bg-[#BCEC30]'
+                            : 'border-[#202020]/30 bg-transparent',
                         )}
                       >
-                        {completed ? 'Завершена' : 'Доступна'}
+                        {showCheck && <IconCheck className="text-white" />}
                       </span>
-                    </Link>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold text-[#202020]">{workout.name}</div>
+                        <div className="text-sm text-[#202020]/70">
+                          {course.nameRU} / {index + 1} день
+                        </div>
+                      </div>
+                    </button>
                   </li>
                 )
               })}
@@ -105,9 +146,9 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           )}
         </div>
 
-        <div className="border-t border-[#D9D9D9] p-6">
-          <Button variant="secondary" fullWidth onClick={onClose}>
-            Закрыть
+        <div className="border-t border-[#D9D9D9] p-4 sm:p-6">
+          <Button fullWidth onClick={handleStart} disabled={!selectedId || loading}>
+            Начать
           </Button>
         </div>
       </div>

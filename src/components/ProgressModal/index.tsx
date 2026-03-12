@@ -36,8 +36,7 @@ export function ProgressModal({
     try {
       setSaving(true)
       await onSave(progress)
-      setMessage('Прогресс сохранён')
-      setTimeout(onClose, 800)
+      onClose()
     } catch {
       setMessage('Не удалось сохранить прогресс')
     } finally {
@@ -50,7 +49,7 @@ export function ProgressModal({
       <div className="relative w-full max-h-[90vh] max-w-lg overflow-hidden rounded-t-2xl border border-[#D9D9D9] bg-white shadow-xl sm:max-h-none sm:rounded-[30px]">
         <div className="border-b border-[#D9D9D9] p-4 sm:p-6">
           <h2 className="pr-8 text-lg font-bold text-[#202020] sm:text-xl">
-            Заполнить прогресс
+            Мой прогресс
           </h2>
           <button
             type="button"
@@ -65,8 +64,7 @@ export function ProgressModal({
         {noCourseId ? (
           <div className="p-4 sm:p-6">
             <p className="text-sm text-[#202020]/80">
-              Чтобы сохранять прогресс, откройте тренировку из раздела «Профиль» (Выбрать
-              тренировку).
+              Чтобы сохранять прогресс, откройте тренировку из раздела «Профиль».
             </p>
             <Button className="mt-4" fullWidth onClick={onClose}>
               Закрыть
@@ -75,7 +73,7 @@ export function ProgressModal({
         ) : exercises.length === 0 ? (
           <div className="p-4 sm:p-6">
             <p className="text-sm text-[#202020]/80">
-              В этой тренировке нет упражнений с повторениями. Прогресс не требуется.
+              В этой тренировке нет упражнений с повторениями.
             </p>
             <Button className="mt-4" fullWidth onClick={onClose}>
               Закрыть
@@ -89,23 +87,20 @@ export function ProgressModal({
             }}
             className="max-h-[60vh] overflow-y-auto p-4 sm:p-6"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               {exercises.map((ex, idx) => (
-                <div
-                  key={ex._id}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-[#f7f7f7] px-4 py-3"
-                >
+                <div key={ex._id} className="space-y-1">
                   <label
                     htmlFor={`progress-${ex._id}`}
-                    className="min-w-0 flex-1 truncate text-sm font-medium text-[#202020]"
+                    className="block text-sm font-medium text-[#202020]"
                   >
-                    {idx + 1}. {ex.name}
+                    Сколько раз вы сделали {ex.name.toLowerCase()}?
                   </label>
                   <input
                     id={`progress-${ex._id}`}
                     type="number"
                     min={0}
-                    className="w-16 rounded-lg border border-[#D9D9D9] bg-white px-2 py-1 text-right text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
+                    className="w-full rounded-lg border border-[#D9D9D9] bg-white px-3 py-2 text-sm text-[#202020] outline-none focus:border-[#BCEC30]"
                     value={progress[idx] ?? 0}
                     onChange={(e) => handleChange(idx, e.target.value)}
                   />
@@ -113,19 +108,9 @@ export function ProgressModal({
               ))}
             </div>
             {message && (
-              <div
-                className={cn(
-                  'mt-4 text-sm',
-                  message.startsWith('Не') ? 'text-rose-600' : 'text-emerald-600',
-                )}
-              >
-                {message}
-              </div>
+              <div className={cn('mt-4 text-sm text-rose-600')}>{message}</div>
             )}
-            <div className="mt-6 flex gap-3">
-              <Button type="button" variant="secondary" fullWidth onClick={onClose}>
-                Отмена
-              </Button>
+            <div className="mt-6">
               <Button type="submit" fullWidth disabled={saving}>
                 {saving ? 'Сохранение…' : 'Сохранить'}
               </Button>

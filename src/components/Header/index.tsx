@@ -30,25 +30,20 @@ export function Header() {
   }
 
   const displayName = user?.email?.split('@')[0] ?? user?.email ?? 'Пользователь'
+  const ariaExpandedValue = menuOpen ? 'true' : 'false'
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#D9D9D9] bg-white/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-4 lg:px-8">
-        <NavLink to="/" className="flex min-w-0 shrink-0 flex-col gap-0.5 sm:gap-1">
-          <div className="flex items-center gap-2">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white sm:size-9 sm:rounded-xl">
-              <svg
-                className="size-4 sm:size-5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-            <span className="truncate text-sm font-semibold text-black sm:text-base">
-              SkyFitnessPro
-            </span>
+        <NavLink to="/" className="flex min-w-0 shrink-0 flex-col gap-0.5 sm:gap-1" title="На главную">
+          <div className="flex shrink-0 items-center">
+            <img
+              src="/logo.png"
+              alt="SkyFitnessPro"
+              className="h-[35px] w-[220px] object-contain object-left"
+              width={220}
+              height={35}
+            />
           </div>
           <div className="truncate text-xs text-black/50 sm:text-[18px] md:text-base">
             Онлайн-тренировки для занятий дома
@@ -62,8 +57,8 @@ export function Header() {
                 type="button"
                 onClick={() => setMenuOpen((v) => !v)}
                 className="flex items-center gap-2 rounded-full py-1 pr-2 transition-colors hover:bg-[#f7f7f7] sm:gap-3 sm:pr-3"
-                aria-expanded={menuOpen ? 'true' : 'false'}
-                aria-haspopup="true"
+                aria-expanded={ariaExpandedValue}
+                aria-haspopup="menu"
               >
                 <div
                   className="size-8 shrink-0 rounded-full bg-[#BCEC30] sm:size-9"
@@ -89,9 +84,10 @@ export function Header() {
                 </span>
               </button>
               {menuOpen && (
-                <div className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-[#D9D9D9] bg-white py-1 shadow-lg">
+                <div role="menu" className="absolute right-0 top-full z-10 mt-1 min-w-48 rounded-xl border border-[#D9D9D9] bg-white py-1 shadow-lg">
                   <NavLink
                     to="/profile"
+                    role="menuitem"
                     className="block px-4 py-2 text-left text-sm text-[#202020] hover:bg-[#f7f7f7]"
                     onClick={() => setMenuOpen(false)}
                   >
@@ -99,6 +95,7 @@ export function Header() {
                   </NavLink>
                   <button
                     type="button"
+                    role="menuitem"
                     className="block w-full px-4 py-2 text-left text-sm text-[#202020] hover:bg-[#f7f7f7]"
                     onClick={handleLogout}
                   >

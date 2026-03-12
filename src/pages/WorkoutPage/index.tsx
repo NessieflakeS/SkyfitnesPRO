@@ -12,13 +12,15 @@ import {
 } from '../../shared/api/workouts'
 import { useAuth } from '../../shared/auth/AuthContext'
 
-type LocationState = { courseId?: string }
+type LocationState = { courseId?: string; workoutIndex?: number }
 
 export function WorkoutPage() {
   const { workoutId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const courseId = (location.state as LocationState | null)?.courseId
+  const state = location.state as LocationState | null
+  const courseId = state?.courseId
+  const workoutIndex = state?.workoutIndex
   const { status, token } = useAuth()
 
   const [workout, setWorkout] = useState<ApiWorkout | null>(null)
@@ -27,6 +29,9 @@ export function WorkoutPage() {
   const [error, setError] = useState<string | null>(null)
   const [progress, setProgress] = useState<number[]>([])
   const [progressModalOpen, setProgressModalOpen] = useState(false)
+  const [showSavedOverlay, setShowSavedOverlay] = useState(false)
+  const [markingComplete, setMarkingComplete] = useState(false)
+  const [markError, setMarkError] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -44,13 +49,11 @@ export function WorkoutPage() {
     setLoading(true)
     setError(null)
 
-    void fetchWorkout(workoutId)
+    void fetchWorkout(workoutId, token)
       .then((data) => {
         if (cancelled) return
         setWorkout(data)
-        setProgress(
-          data.exercises.map((ex) => (typeof ex.quantity === 'number' ? ex.quantity : 0)),
-        )
+        setProgress(data.exercises.map(() => 0))
       })
       .catch(() => {
         if (cancelled) return
@@ -65,7 +68,7 @@ export function WorkoutPage() {
     return () => {
       cancelled = true
     }
-  }, [workoutId])
+  }, [workoutId, token])
 
   useEffect(() => {
     if (!courseId) return
@@ -154,59 +157,121 @@ export function WorkoutPage() {
     if (!token || !courseId) return
     await saveWorkoutProgress(courseId, workout._id, newProgress, token)
     setProgress(newProgress)
+    setProgressModalOpen(false)
+    setShowSavedOverlay(true)
+    setTimeout(() => setShowSavedOverlay(false), 2500)
   }
 
+  const handleMarkLessonComplete = async () => {
+    if (!token || !courseId) return
+    setMarkError(null)
+    setMarkingComplete(true)
+    try {
+      await saveWorkoutProgress(courseId, workout._id, [], token)
+      setShowSavedOverlay(true)
+      setTimeout(() => setShowSavedOverlay(false), 2500)
+    } catch {
+      setMarkError('Не удалось отметить урок')
+    } finally {
+      setMarkingComplete(false)
+    }
+  }
+
+  const hasNoExercises = workout.exercises.length === 0
+  const hasAnyProgress = workout.exercises.some(
+    (ex, idx) => (progress[idx] ?? 0) > 0 && (ex.quantity ?? 0) > 0,
+  )
+
   return (
-    <div className="space-y-5 sm:space-y-8">
-      <section className="space-y-1 sm:space-y-2">
-        <div className="text-xs font-medium text-[#202020]/60">
-          {courseName ? <span>{courseName}</span> : 'Курс'} / Тренировка
+    <div className="space-y-6 sm:space-y-8">
+      <h1 className="text-xl font-bold tracking-tight text-[#202020] sm:text-2xl md:text-3xl">
+        {courseName ?? 'Тренировка'}
+      </h1>
+
+      <section className="relative">
+        <div className="aspect-video overflow-hidden rounded-2xl border border-[#D9D9D9] bg-black shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
+          <iframe
+            className="h-full w-full"
+            src={workout.video}
+            title={workout.name}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
         </div>
-        <h1 className="text-xl font-bold tracking-tight text-[#202020] sm:text-2xl md:text-[32px]">
-          {workout.name}
-        </h1>
+        {showSavedOverlay && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/20 sm:rounded-[30px]">
+            <div className="rounded-2xl bg-white px-6 py-5 shadow-xl">
+              <p className="text-center font-bold text-[#202020]">Ваш прогресс засчитан!</p>
+              <div className="mt-3 flex justify-center">
+                <span className="flex size-10 items-center justify-center rounded-full bg-[#BCEC30]">
+                  <svg
+                    className="size-6 text-black"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path d="M5 12l5 5L20 7" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
-      <section className="grid gap-4 sm:gap-6 lg:grid-cols-5">
-        <div className="min-w-0 lg:col-span-3">
-          <div className="aspect-video overflow-hidden rounded-2xl border border-[#D9D9D9] bg-black shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
-            <iframe
-              className="h-full w-full"
-              src={workout.video}
-              title={workout.name}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-          </div>
-        </div>
-
-        <div className="min-w-0 space-y-4 lg:col-span-2">
-          <div className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
-            <div className="text-sm font-semibold text-[#202020]">Упражнения</div>
-            <div className="mt-4 space-y-3">
-              {workout.exercises.map((ex, idx) => (
-                <div
-                  key={ex._id}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-[#f7f7f7] px-4 py-3"
-                >
-                  <div className="min-w-0 truncate text-sm font-medium text-[#202020]">
-                    {idx + 1}. {ex.name}
-                  </div>
-                  <div className="shrink-0 text-sm text-[#202020]/70">
-                    {progress[idx] ?? 0} / {ex.quantity}
-                  </div>
-                </div>
-              ))}
-            </div>
-
+      <section className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
+        <h2 className="text-lg font-bold text-[#202020] sm:text-xl">
+          Упражнения тренировки{workoutIndex ? ` ${workoutIndex}` : ''}
+        </h2>
+        {hasNoExercises ? (
+          <div className="mt-4">
+            <p className="text-sm text-[#202020]/80">
+              В этом уроке нет упражнений с повторениями. Отметьте урок как пройденный, чтобы зафиксировать прохождение в курсе.
+            </p>
             <div className="mt-6">
-              <Button fullWidth onClick={() => setProgressModalOpen(true)}>
-                Заполнить прогресс
+              <Button
+                fullWidth
+                onClick={() => void handleMarkLessonComplete()}
+                disabled={!courseId || markingComplete}
+              >
+                {markingComplete ? 'Сохранение…' : 'Отметить урок пройденным'}
+              </Button>
+              {markError && (
+                <p className="mt-2 text-sm text-rose-600">{markError}</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {workout.exercises.map((ex, idx) => {
+                const current = progress[idx] ?? 0
+                const target = typeof ex.quantity === 'number' ? ex.quantity : 0
+                const percent = target > 0 ? Math.round((current / target) * 100) : 0
+                return (
+                  <div key={ex._id} className="space-y-1">
+                    <div className="text-sm font-medium text-[#202020]">
+                      {ex.name} {percent}%
+                    </div>
+                    <div className="h-1 overflow-hidden rounded-full bg-[#e5e7eb]">
+                      <div
+                        className="h-full rounded-full bg-[#3b82f6] transition-all"
+                        style={{ width: `${Math.min(percent, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="mt-6">
+              <Button fullWidth onClick={() => setProgressModalOpen(true)} disabled={!courseId}>
+                {hasAnyProgress ? 'Обновить свой прогресс' : 'Заполнить свой прогресс'}
               </Button>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </section>
 
       {progressModalOpen && (
