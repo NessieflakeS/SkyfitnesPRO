@@ -1,0 +1,25 @@
+@reference 'tailwindcss';
+
+.section {
+  @apply space-y-4;
+}
+
+.title {
+  @apply text-base font-semibold text-[#202020] sm:text-lg;
+}
+
+.list {
+  @apply grid grid-cols-1 justify-items-center gap-3 sm:grid-cols-3 sm:gap-4;
+}
+
+.card {
+  @apply flex h-[141px] w-full max-w-[343px] items-center gap-3 rounded-2xl bg-[#2d2d2d] p-3 sm:rounded-[30px] sm:p-4;
+}
+
+.index {
+  @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2d2d2d] text-[75px] leading-none font-bold text-[#BCEC30] sm:h-11 sm:w-11;
+}
+
+.text {
+  @apply min-w-0 text-base leading-snug text-white sm:text-lg;
+}

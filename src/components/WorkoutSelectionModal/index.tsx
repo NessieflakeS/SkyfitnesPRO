@@ -10,6 +10,8 @@ import { fetchCourseProgress, type CourseProgress } from '../../shared/api/worko
 import { cn } from '../../shared/lib/cn'
 import { Button } from '../Button'
 
+import styles from './style.module.css'
+
 type Props = {
   course: ApiCourse
   token: string
@@ -18,7 +20,7 @@ type Props = {
 
 const IconCheck = ({ className }: { className?: string }) => (
   <svg
-    className={cn('size-5', className)}
+    className={cn(styles.icon, className)}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -49,8 +51,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
     ])
       .then(([workoutsData, progressData]) => {
         if (cancelled) return
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- API may return undefined
-        const list = workoutsData ?? []
+        const list = workoutsData
         const orderIds = course.workouts
         const ordered = list.slice().sort((a, b) => {
           const i = orderIds.indexOf(a._id)
@@ -64,8 +65,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           (w) => !wp?.find((p) => p.workoutId === w._id)?.workoutCompleted,
         )
         const firstId = firstIncomplete?._id ?? ordered[0]?._id
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- firstId can be undefined
-        setSelectedId(firstId ?? null)
+        setSelectedId(firstId)
       })
       .catch(() => {
         if (cancelled) return
@@ -96,37 +96,32 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-      <div className="relative flex w-full max-w-lg flex-col rounded-t-2xl border border-[#D9D9D9] bg-white shadow-xl sm:max-h-[85vh] sm:rounded-[30px]">
-        <div className="border-b border-[#D9D9D9] p-4 sm:p-6">
-          <h2 className="text-center text-lg font-bold text-[#202020] sm:text-xl">
-            Выберите тренировку
-          </h2>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Выберите тренировку</h2>
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 text-2xl text-[#202020]/50 hover:text-[#202020]"
+            className={styles.closeButton}
             aria-label="Закрыть"
           >
             &times;
           </button>
         </div>
 
-        <div className="max-h-[50vh] overflow-y-auto sm:max-h-[60vh]">
+        <div className={styles.listWrap}>
           {loading ? (
-            <div className="space-y-0">
+            <div className={styles.skeletonList}>
               {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 border-b border-[#D9D9D9]/60 p-4"
-                >
-                  <div className="size-6 shrink-0 rounded-full border-2 border-[#D9D9D9]" />
-                  <div className="h-4 w-32 animate-pulse rounded bg-[#f7f7f7]" />
+                <div key={i} className={styles.skeletonItem}>
+                  <div className={styles.skeletonCircle} />
+                  <div className={styles.skeletonLine} />
                 </div>
               ))}
             </div>
           ) : (
-            <ul className="divide-y divide-[#D9D9D9]/60">
+            <ul className={styles.list}>
               {workouts.map((workout, index) => {
                 const completed = getWorkoutStatus(workout._id)
                 const selected = selectedId === workout._id
@@ -137,23 +132,21 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
                       type="button"
                       onClick={() => setSelectedId(workout._id)}
                       className={cn(
-                        'flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-[#f7f7f7]',
-                        selected && 'bg-[#f7f7f7]',
+                        styles.itemButton,
+                        selected && styles.itemButtonSelected,
                       )}
                     >
                       <span
                         className={cn(
-                          'flex size-6 shrink-0 items-center justify-center rounded-full border-2',
-                          showCheck
-                            ? 'border-[#BCEC30] bg-[#BCEC30]'
-                            : 'border-[#202020]/30 bg-transparent',
+                          styles.checkWrap,
+                          showCheck ? styles.checkActive : styles.checkInactive,
                         )}
                       >
-                        {showCheck && <IconCheck className="text-white" />}
+                        {showCheck && <IconCheck className={styles.checkIcon} />}
                       </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="font-semibold text-[#202020]">{workout.name}</div>
-                        <div className="text-sm text-[#202020]/70">
+                      <div className={styles.itemContent}>
+                        <div className={styles.itemTitle}>{workout.name}</div>
+                        <div className={styles.itemMeta}>
                           {course.nameRU} / {index + 1} день
                         </div>
                       </div>
@@ -165,7 +158,7 @@ export function WorkoutSelectionModal({ course, token, onClose }: Props) {
           )}
         </div>
 
-        <div className="border-t border-[#D9D9D9] p-4 sm:p-6">
+        <div className={styles.footer}>
           <Button fullWidth onClick={handleStart} disabled={!selectedId || loading}>
             Начать
           </Button>

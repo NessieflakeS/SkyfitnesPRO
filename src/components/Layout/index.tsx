@@ -4,11 +4,13 @@ import { Footer } from '../Footer'
 import { Header } from '../Header'
 import { ScrollToTopButton } from '../ScrollToTopButton'
 
+import styles from './style.module.css'
+
 export function Layout() {
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#fafafa] text-[#202020]">
+    <div className={styles.layout}>
       <Header />
-      <main className="mx-auto w-full max-w-6xl px-3 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <main className={styles.main}>
         <Outlet />
       </main>
       <Footer />

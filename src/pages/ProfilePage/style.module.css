@@ -1,0 +1,29 @@
+@reference 'tailwindcss';
+
+.page {
+  @apply space-y-6 sm:space-y-8;
+}
+
+.title {
+  @apply text-center text-xl font-bold tracking-tight text-[#202020] sm:text-left sm:text-2xl;
+}
+
+.section {
+  @apply space-y-4;
+}
+
+.sectionTitle {
+  @apply text-lg font-bold text-[#202020];
+}
+
+.error {
+  @apply rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700;
+}
+
+.grid {
+  @apply grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.skeleton {
+  @apply h-64 animate-pulse rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] sm:h-72 sm:rounded-[30px];
+}

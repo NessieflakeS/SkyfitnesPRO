@@ -1,0 +1,49 @@
+@reference 'tailwindcss';
+
+.page {
+  @apply space-y-5 sm:space-y-8 md:space-y-10;
+}
+
+.hero {
+  @apply flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6;
+}
+
+.heroTitle {
+  @apply max-w-[947px] text-2xl font-medium leading-tight text-[#202020] sm:text-4xl md:text-5xl lg:text-[56px] lg:font-medium lg:text-black;
+}
+
+.heroLine {
+  @apply block;
+}
+
+.heroLineNoWrap {
+  @apply block whitespace-nowrap;
+}
+
+.heroBadgeWrap {
+  @apply relative hidden w-full shrink-0 sm:block sm:w-auto;
+}
+
+.heroBadge {
+  @apply rounded-[5px] bg-[#BCEC30] px-5 py-4;
+}
+
+.heroBadgeText {
+  @apply text-xl font-normal leading-[1.1] text-[#202020] sm:text-[24px] lg:text-[32px];
+}
+
+.heroBadgeArrow {
+  @apply absolute left-6 top-full h-0 w-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-[#BCEC30] sm:left-8;
+}
+
+.error {
+  @apply rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700;
+}
+
+.grid {
+  @apply grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3;
+}
+
+.skeleton {
+  @apply h-52 animate-pulse rounded-[30px] border border-[#D9D9D9] bg-[#f7f7f7];
+}

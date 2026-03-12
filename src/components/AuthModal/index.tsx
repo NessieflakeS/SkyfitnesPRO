@@ -5,6 +5,8 @@ import { useAuth } from '../../shared/auth/AuthContext'
 import { cn } from '../../shared/lib/cn'
 import { useModal } from '../../shared/ui/ModalContext'
 
+import styles from './style.module.css'
+
 type Mode = 'login' | 'register'
 
 export function AuthModal() {
@@ -111,27 +113,27 @@ export function AuthModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className={styles.overlay}
       role="dialog"
       aria-modal="true"
       aria-labelledby="auth-modal-title"
     >
-      <div className="relative w-full max-w-md overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)]">
+      <div className={styles.modal}>
         <button
           type="button"
           onClick={closeAuthModal}
-          className="absolute right-3 top-3 text-[#202020]/50 hover:text-[#202020]"
+          className={styles.closeButton}
           aria-label="Закрыть"
         >
-          <span className="text-xl leading-none">&times;</span>
+          <span className={styles.closeIcon}>&times;</span>
         </button>
 
-        <div className="flex flex-col items-center px-8 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-8">
-          <div className="mb-6 flex items-center justify-center sm:mb-8">
+        <div className={styles.content}>
+          <div className={styles.logoWrap}>
             <img
               src="/logo.png"
               alt="SkyFitnessPro"
-              className="h-9 w-auto"
+              className={styles.logo}
               width={40}
               height={36}
             />
@@ -143,33 +145,26 @@ export function AuthModal() {
               const p = handleSubmit(e)
               void p
             }}
-            className="flex w-full flex-col items-stretch gap-4"
-            autoComplete="on"
+            className={styles.form}
           >
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium text-[#202020]"
-                htmlFor={`${formId}-email`}
-              >
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor={`${formId}-email`}>
                 {mode === 'login' ? 'Логин' : 'Эл. почта'}
               </label>
               <input
                 id={`${formId}-email`}
-                type="email"
-                name="email"
-                placeholder="user@example.com"
-                autoComplete="email"
-                className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
+                type={mode === 'login' ? 'text' : 'email'}
+                name={mode === 'login' ? 'username' : 'email'}
+                placeholder={mode === 'login' ? 'Введите логин' : 'user@example.com'}
+                autoComplete={mode === 'login' ? 'username' : 'email'}
+                className={styles.input}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium text-[#202020]"
-                htmlFor={`${formId}-password`}
-              >
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor={`${formId}-password`}>
                 Пароль
               </label>
               <input
@@ -178,18 +173,15 @@ export function AuthModal() {
                 name="password"
                 placeholder="••••••••"
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
+                className={styles.input}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
             {mode === 'register' && (
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-[#202020]"
-                  htmlFor={`${formId}-password-repeat`}
-                >
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor={`${formId}-password-repeat`}>
                   Повторите пароль
                 </label>
                 <input
@@ -198,30 +190,24 @@ export function AuthModal() {
                   name="passwordRepeat"
                   placeholder="••••••••"
                   autoComplete="new-password"
-                  className="h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30]"
+                  className={styles.input}
                   value={passwordRepeat}
                   onChange={(e) => setPasswordRepeat(e.target.value)}
                 />
               </div>
             )}
 
-            {errorMessage && (
-              <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
-                {errorMessage}
-              </div>
-            )}
+            {errorMessage && <div className={styles.error}>{errorMessage}</div>}
 
-            <div className="flex flex-col gap-3 pt-1">
+            <div className={styles.actions}>
               <button
                 type="submit"
                 disabled={isLoading || isDisabled}
                 className={cn(
-                  'rounded-[28px] border-none px-5 py-3.5 text-sm font-medium transition-colors',
-                  !isDisabled &&
-                    !isLoading &&
-                    'bg-[#BCEC30] text-black hover:bg-[#c8f050] active:bg-black active:text-white',
-                  (isLoading || isDisabled) &&
-                    'cursor-not-allowed bg-[#ebebeb] text-[#202020]/40 hover:bg-[#ebebeb] active:bg-[#ebebeb] active:text-[#202020]/40',
+                  styles.submitButton,
+                  !isDisabled && !isLoading
+                    ? styles.submitButtonActive
+                    : styles.submitButtonDisabled,
                 )}
               >
                 {isLoading
@@ -237,10 +223,8 @@ export function AuthModal() {
                   handleModeSwitch(mode === 'login' ? 'register' : 'login')
                 }}
                 className={cn(
-                  'rounded-[28px] border-2 px-5 py-3.5 text-sm font-medium transition-colors',
-                  !isDisabled
-                    ? 'border-black bg-white text-black hover:bg-[#f5f5f5] active:bg-[#e5e5e5]'
-                    : 'cursor-not-allowed border-[#D9D9D9] bg-white text-[#202020]/40 hover:bg-white active:bg-white',
+                  styles.switchButton,
+                  !isDisabled ? styles.switchButtonActive : styles.switchButtonDisabled,
                 )}
               >
                 {mode === 'login' ? 'Зарегистрироваться' : 'Войти'}

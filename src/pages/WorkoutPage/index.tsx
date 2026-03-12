@@ -12,6 +12,8 @@ import {
 } from '../../shared/api/workouts'
 import { useAuth } from '../../shared/auth/AuthContext'
 
+import styles from './style.module.css'
+
 type LocationState = { courseId?: string; workoutIndex?: number }
 
 export function WorkoutPage() {
@@ -104,18 +106,11 @@ export function WorkoutPage() {
 
   if (!workoutId) {
     return (
-      <div className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
-        <h1 className="text-base font-semibold text-[#202020] sm:text-lg">
-          Тренировка не найдена
-        </h1>
-        <p className="mt-2 text-xs text-[#202020]/70 sm:text-sm">
-          Проверьте ссылку или вернитесь к курсам.
-        </p>
-        <div className="mt-4 sm:mt-5">
-          <Link
-            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]"
-            to="/"
-          >
+      <div className={styles.notFoundCard}>
+        <h1 className={styles.notFoundTitle}>Тренировка не найдена</h1>
+        <p className={styles.notFoundText}>Проверьте ссылку или вернитесь к курсам.</p>
+        <div className={styles.notFoundActions}>
+          <Link className={styles.notFoundLink} to="/">
             Перейти к курсам
           </Link>
         </div>
@@ -125,27 +120,22 @@ export function WorkoutPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="h-40 animate-pulse rounded-[30px] bg-[#f7f7f7]" />
-        <div className="h-40 animate-pulse rounded-[30px] bg-[#f7f7f7]" />
+      <div className={styles.loading}>
+        <div className={styles.loadingBlock} />
+        <div className={styles.loadingBlock} />
       </div>
     )
   }
 
   if (error || !workout) {
     return (
-      <div className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
-        <h1 className="text-base font-semibold text-[#202020] sm:text-lg">
-          Тренировка не найдена
-        </h1>
-        <p className="mt-2 text-xs text-[#202020]/70 sm:text-sm">
+      <div className={styles.notFoundCard}>
+        <h1 className={styles.notFoundTitle}>Тренировка не найдена</h1>
+        <p className={styles.notFoundText}>
           {error ?? 'Проверьте ссылку или вернитесь к курсам.'}
         </p>
-        <div className="mt-4 sm:mt-5">
-          <Link
-            className="inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-3 text-base font-normal text-black hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px]"
-            to="/"
-          >
+        <div className={styles.notFoundActions}>
+          <Link className={styles.notFoundLink} to="/">
             Перейти к курсам
           </Link>
         </div>
@@ -179,20 +169,17 @@ export function WorkoutPage() {
 
   const hasNoExercises = workout.exercises.length === 0
   const hasAnyProgress = workout.exercises.some(
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- quantity can be undefined
-    (ex, idx) => (progress[idx] ?? 0) > 0 && (ex.quantity ?? 0) > 0,
+    (ex, idx) => (progress[idx] ?? 0) > 0 && ex.quantity > 0,
   )
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <h1 className="text-xl font-bold tracking-tight text-[#202020] sm:text-2xl md:text-3xl">
-        {courseName ?? 'Тренировка'}
-      </h1>
+    <div className={styles.page}>
+      <h1 className={styles.pageTitle}>{courseName ?? 'Тренировка'}</h1>
 
-      <section className="relative">
-        <div className="aspect-video overflow-hidden rounded-2xl border border-[#D9D9D9] bg-black shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px]">
+      <section className={styles.videoSection}>
+        <div className={styles.videoWrap}>
           <iframe
-            className="h-full w-full"
+            className={styles.iframe}
             src={workout.video}
             title={workout.name}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -201,15 +188,13 @@ export function WorkoutPage() {
           />
         </div>
         {showSavedOverlay && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/20 sm:rounded-[30px]">
-            <div className="rounded-2xl bg-white px-6 py-5 shadow-xl">
-              <p className="text-center font-bold text-[#202020]">
-                Ваш прогресс засчитан!
-              </p>
-              <div className="mt-3 flex justify-center">
-                <span className="flex size-10 items-center justify-center rounded-full bg-[#BCEC30]">
+          <div className={styles.overlay}>
+            <div className={styles.overlayCard}>
+              <p className={styles.overlayText}>Ваш прогресс засчитан!</p>
+              <div className={styles.overlayIconWrap}>
+                <span className={styles.overlayIconBg}>
                   <svg
-                    className="size-6 text-black"
+                    className={styles.overlayIcon}
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -224,17 +209,17 @@ export function WorkoutPage() {
         )}
       </section>
 
-      <section className="rounded-2xl border border-[#D9D9D9] bg-white p-4 shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] sm:rounded-[30px] sm:p-6">
-        <h2 className="text-lg font-bold text-[#202020] sm:text-xl">
+      <section className={styles.card}>
+        <h2 className={styles.cardTitle}>
           Упражнения тренировки{workoutIndex != null ? ` ${String(workoutIndex)}` : ''}
         </h2>
         {hasNoExercises ? (
-          <div className="mt-4">
-            <p className="text-sm text-[#202020]/80">
+          <div className={styles.emptyWrap}>
+            <p className={styles.emptyText}>
               В этом уроке нет упражнений с повторениями. Отметьте урок как пройденный,
               чтобы зафиксировать прохождение в курсе.
             </p>
-            <div className="mt-6">
+            <div className={styles.actions}>
               <Button
                 fullWidth
                 onClick={() => void handleMarkLessonComplete()}
@@ -242,24 +227,24 @@ export function WorkoutPage() {
               >
                 {markingComplete ? 'Сохранение…' : 'Отметить урок пройденным'}
               </Button>
-              {markError && <p className="mt-2 text-sm text-rose-600">{markError}</p>}
+              {markError && <p className={styles.markError}>{markError}</p>}
             </div>
           </div>
         ) : (
           <>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={styles.exerciseGrid}>
               {workout.exercises.map((ex, idx) => {
                 const current = progress[idx] ?? 0
-                const target = typeof ex.quantity === 'number' ? ex.quantity : 0
+                const target = ex.quantity
                 const percent = target > 0 ? Math.round((current / target) * 100) : 0
                 return (
-                  <div key={ex._id} className="space-y-1">
-                    <div className="text-sm font-medium text-[#202020]">
+                  <div key={ex._id} className={styles.exerciseItem}>
+                    <div className={styles.exerciseLabel}>
                       {ex.name} {String(percent)}%
                     </div>
-                    <div className="h-1 overflow-hidden rounded-full bg-[#e5e7eb]">
+                    <div className={styles.progressTrack}>
                       <div
-                        className="h-full rounded-full bg-[#3b82f6] transition-all"
+                        className={styles.progressValue}
                         style={{ width: `${String(Math.min(percent, 100))}%` }}
                       />
                     </div>
@@ -267,7 +252,7 @@ export function WorkoutPage() {
                 )
               })}
             </div>
-            <div className="mt-6">
+            <div className={styles.actions}>
               <Button
                 fullWidth
                 onClick={() => setProgressModalOpen(true)}

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { cn } from '../../shared/lib/cn'
 
+import styles from './style.module.css'
+
 type Props = {
   src: string
   alt: string
@@ -24,13 +26,13 @@ export function CourseImage({
   }, [src])
 
   return (
-    <div className={cn('relative overflow-hidden', className)}>
-      <div className={cn('absolute inset-0', fallbackClassName)} aria-hidden />
+    <div className={cn(styles.root, className)}>
+      <div className={cn(styles.fallback, fallbackClassName)} aria-hidden />
       {!failed && (
         <img
           src={src}
           alt={alt}
-          className="absolute inset-0 h-full w-full object-cover"
+          className={styles.image}
           style={{ objectPosition }}
           onError={() => setFailed(true)}
         />

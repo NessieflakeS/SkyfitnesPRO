@@ -4,6 +4,8 @@ import { CourseCard } from '../../components/CourseCard'
 import { fetchCourses, type ApiCourse } from '../../shared/api/courses'
 import { mapApiCourseToCourse } from '../../shared/mappers/courseMapper'
 
+import styles from './style.module.css'
+
 export function CoursesPage() {
   const [courses, setCourses] = useState<ApiCourse[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -28,43 +30,33 @@ export function CoursesPage() {
   }, [])
 
   return (
-    <div className="space-y-5 sm:space-y-8 md:space-y-10">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <h1 className="max-w-[947px] text-2xl font-medium leading-tight text-[#202020] sm:text-4xl md:text-5xl lg:text-[56px] lg:font-medium lg:text-black">
-          <span className="block whitespace-nowrap">Начните заниматься спортом</span>
-          <span className="block">и улучшите качество жизни</span>
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <h1 className={styles.heroTitle}>
+          <span className={styles.heroLineNoWrap}>Начните заниматься спортом</span>
+          <span className={styles.heroLine}>и улучшите качество жизни</span>
         </h1>
-        <div className="relative hidden w-full shrink-0 sm:block sm:w-auto">
-          <div className="rounded-[5px] bg-[#BCEC30] px-5 py-4">
-            <p className="text-xl font-normal leading-[1.1] text-[#202020] sm:text-[24px] lg:text-[32px]">
+        <div className={styles.heroBadgeWrap}>
+          <div className={styles.heroBadge}>
+            <p className={styles.heroBadgeText}>
               Измени своё
               <br />
               тело за полгода!
             </p>
           </div>
-          <div
-            className="absolute left-6 top-full h-0 w-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-[#BCEC30] sm:left-8"
-            aria-hidden
-          />
+          <div className={styles.heroBadgeArrow} aria-hidden />
         </div>
       </section>
 
-      {error && (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-          {error}
-        </div>
-      )}
+      {error && <div className={styles.error}>{error}</div>}
 
-      <section className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+      <section className={styles.grid}>
         {courses
           ? courses.map((course) => (
               <CourseCard key={course._id} course={mapApiCourseToCourse(course)} />
             ))
           : Array.from({ length: 3 }).map((_, index) => (
-              <div
-                key={index}
-                className="h-52 animate-pulse rounded-[30px] border border-[#D9D9D9] bg-[#f7f7f7]"
-              />
+              <div key={index} className={styles.skeleton} />
             ))}
       </section>
     </div>

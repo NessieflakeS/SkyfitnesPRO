@@ -6,7 +6,9 @@ const COURSE_SLUG: Record<string, string> = {
   бодифлекс: 'bodyflex',
 }
 
-const COURSE_FILES: Record<string, { banner?: string; card?: string; cta?: string }> = {
+const COURSE_FILES: Partial<
+  Record<string, { banner?: string; card?: string; cta?: string }>
+> = {
   yoga: { card: 'card_1.png' },
   stretching: { card: 'card_2.png' },
   fitness: { card: 'card_3.png' },
@@ -14,7 +16,7 @@ const COURSE_FILES: Record<string, { banner?: string; card?: string; cta?: strin
   bodyflex: { card: 'card_5.png' },
 }
 
-const BASE = import.meta.env?.BASE_URL ?? '' // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+const BASE = import.meta.env.BASE_URL
 const IMAGE_BASE = `${BASE.replace(/\/$/, '')}/images/courses`
 const DEFAULT_EXT = '.jpg'
 
@@ -30,7 +32,6 @@ const FOLDERS: Record<'banner' | 'card' | 'cta', string> = {
 }
 
 function pathFor(type: 'banner' | 'card' | 'cta', slug: string): string {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- slug may not match
   const files = COURSE_FILES[slug]?.[type]
   const ext = type === 'banner' ? '.png' : DEFAULT_EXT
   const filename = files ?? `${slug}${ext}`
@@ -44,7 +45,7 @@ export function getCourseBannerImagePath(nameRU: string): string {
 
 export function getCourseCardImagePath(nameRU: string): string {
   const slug = getSlug(nameRU)
-  const filename = COURSE_FILES[slug]?.card ?? `${slug}.jpg` // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+  const filename = COURSE_FILES[slug]?.card ?? `${slug}.jpg`
   return `/images/courses/cards/${encodeURIComponent(filename)}`
 }
 

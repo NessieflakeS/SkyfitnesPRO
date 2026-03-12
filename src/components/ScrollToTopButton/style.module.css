@@ -1,0 +1,13 @@
+@reference 'tailwindcss';
+
+.button {
+  @apply fixed bottom-6 right-6 z-50 rounded-[46px] bg-[#BCEC30] px-5 py-3.5 text-base font-normal text-black shadow-lg transition-all hover:bg-[#99D100] sm:bottom-6 sm:right-6 sm:text-[18px];
+}
+
+.visible {
+  @apply translate-y-0 opacity-100;
+}
+
+.hidden {
+  @apply pointer-events-none translate-y-2 opacity-0;
+}
