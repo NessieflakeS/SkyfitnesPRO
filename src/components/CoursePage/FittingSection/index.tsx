@@ -2,9 +2,10 @@ import styles from './style.module.css'
 
 type Props = {
   items: string[]
+  compactTabletText?: boolean
 }
 
-export function FittingSection({ items }: Props) {
+export function FittingSection({ items, compactTabletText = false }: Props) {
   return (
     <section className={styles.section}>
       <h2 className={styles.title}>Подойдет для вас, если:</h2>
@@ -14,7 +15,11 @@ export function FittingSection({ items }: Props) {
             <span className={styles.index} aria-hidden>
               {i + 1}
             </span>
-            <p className={styles.text}>{text}</p>
+            <p
+              className={`${styles.text} ${compactTabletText ? styles.textCompactTablet : ''}`}
+            >
+              {text}
+            </p>
           </div>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { addCourseForUser } from '../../shared/api/courses'
@@ -12,42 +12,34 @@ import styles from './style.module.css'
 
 import type { Course } from '../../shared/types/fitness'
 
-const IconCalendar = () => (
-  <svg
-    className={styles.icon}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-    <line x1="16" y1="2" x2="16" y2="6" />
-    <line x1="8" y1="2" x2="8" y2="6" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-)
-const IconClock = () => (
-  <svg
-    className={styles.icon}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <polyline points="12 6 12 12 16 14" />
-  </svg>
-)
-const IconSignal = () => (
-  <svg className={styles.icon} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 20h4V10H2v10zm6 0h4V4H8v16zm6 0h4v-7h-4v7zm6 0h4V2h-4v18z" />
-  </svg>
-)
-
 function AddCourseButton({ courseId }: { courseId: string }) {
   const { status, token, refreshUser } = useAuth()
   const { openAuthModal } = useModal()
   const [adding, setAdding] = useState(false)
+  const [feedback, setFeedback] = useState<{
+    message: string
+    variant: 'success' | 'info' | 'error'
+  } | null>(null)
+  const timeoutRef = useRef<number | null>(null)
+
+  const showFeedback = (message: string, variant: 'success' | 'info' | 'error') => {
+    setFeedback({ message, variant })
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      setFeedback(null)
+      timeoutRef.current = null
+    }, 2200)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -58,10 +50,18 @@ function AddCourseButton({ courseId }: { courseId: string }) {
     }
     setAdding(true)
     addCourseForUser(courseId, token)
-      .then(() => refreshUser())
+      .then(() => {
+        showFeedback('Курс добавлен', 'success')
+        return refreshUser()
+      })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : ''
-        if (msg.includes('Курс уже был добавлен')) void refreshUser()
+        if (msg.includes('Курс уже был добавлен')) {
+          showFeedback('Уже добавлен', 'info')
+          void refreshUser()
+          return
+        }
+        showFeedback('Ошибка добавления', 'error')
       })
       .finally(() => setAdding(false))
   }
@@ -76,6 +76,19 @@ function AddCourseButton({ courseId }: { courseId: string }) {
       aria-label="Добавить курс"
     >
       <img src="/Icon_plus.svg" alt="" className={styles.addIcon} aria-hidden />
+      {feedback && (
+        <span
+          className={cn(
+            styles.inlineToast,
+            feedback.variant === 'success' && styles.inlineToastSuccess,
+            feedback.variant === 'info' && styles.inlineToastInfo,
+            feedback.variant === 'error' && styles.inlineToastError,
+          )}
+          role="status"
+        >
+          {feedback.message}
+        </span>
+      )}
     </button>
   )
 }
@@ -89,7 +102,7 @@ export function CourseCard({ course }: Props) {
     <article className={styles.card}>
       <Link to={`/courses/${course.id}`} className={styles.link}>
         <div className={styles.imageWrap}>
-          <div className={cn(styles.imageFallback, course.coverColor)} aria-hidden />
+          <div className={styles.imageFallback} aria-hidden />
           <img
             key={course.id}
             src={getCourseCardImagePath(course.title)}
@@ -104,15 +117,15 @@ export function CourseCard({ course }: Props) {
           <h3 className={styles.title}>{course.title}</h3>
           <div className={styles.metaList}>
             <span className={styles.metaChip}>
-              <IconCalendar />
+              <img src="/Icon_calendar.svg" alt="" className={styles.icon} aria-hidden />
               {course.durationDays} дней
             </span>
             <span className={styles.metaChip}>
-              <IconClock />
+              <img src="/Icon_clock.svg" alt="" className={styles.icon} aria-hidden />
               {course.dailyMinutesFrom}-{course.dailyMinutesTo} мин/день
             </span>
             <span className={styles.metaChip}>
-              <IconSignal />
+              <img src="/Group_signal.png" alt="" className={styles.icon} aria-hidden />
               {getCourseLevelLabel(course.level)}
             </span>
           </div>

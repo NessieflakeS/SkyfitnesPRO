@@ -5,7 +5,7 @@
 }
 
 .title {
-  @apply text-base font-semibold text-[#202020] sm:text-lg;
+  @apply text-[26px] font-semibold leading-tight text-[#202020];
 }
 
 .list {
@@ -21,5 +21,9 @@
 }
 
 .text {
-  @apply min-w-0 text-base leading-snug text-white sm:text-lg;
+  @apply min-w-0 text-[18px] leading-snug text-white lg:text-2xl;
+}
+
+.textCompactTablet {
+  @apply sm:text-base md:text-[15px] lg:text-2xl;
 }

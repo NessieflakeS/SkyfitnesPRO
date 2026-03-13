@@ -1,7 +1,7 @@
 @reference 'tailwindcss';
 
 .card {
-  @apply relative flex h-[492px] w-full max-w-[343px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)] sm:rounded-[30px];
+  @apply relative flex h-[492px] w-full max-w-[343px] flex-col overflow-hidden rounded-[30px] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)];
 }
 
 .link {
@@ -9,15 +9,15 @@
 }
 
 .imageWrap {
-  @apply relative min-h-0 flex-1 overflow-hidden rounded-t-2xl sm:rounded-t-[30px];
+  @apply relative min-h-0 flex-1 overflow-hidden rounded-[30px] bg-white;
 }
 
 .imageFallback {
-  @apply absolute inset-0 bg-gradient-to-br;
+  @apply absolute inset-0 bg-white;
 }
 
 .coverImage {
-  @apply absolute inset-0 h-full w-full rounded-t-2xl object-cover sm:rounded-t-[30px];
+  @apply absolute inset-0 h-full w-full rounded-[30px] object-cover;
 }
 
 .content {
@@ -25,7 +25,7 @@
 }
 
 .title {
-  @apply text-xl font-bold leading-tight text-black sm:text-2xl;
+  @apply text-2xl font-bold leading-tight text-black;
 }
 
 .metaList {
@@ -46,4 +46,20 @@
 
 .addIcon {
   @apply size-full object-contain;
+}
+
+.inlineToast {
+  @apply pointer-events-none absolute right-[calc(100%+8px)] top-1/2 z-20 max-w-[170px] -translate-y-1/2 rounded-lg border px-2.5 py-1 text-xs font-medium shadow-md;
+}
+
+.inlineToastSuccess {
+  @apply border-emerald-200 bg-emerald-50 text-emerald-800;
+}
+
+.inlineToastInfo {
+  @apply border-sky-200 bg-sky-50 text-sky-800;
+}
+
+.inlineToastError {
+  @apply border-rose-200 bg-rose-50 text-rose-800;
 }

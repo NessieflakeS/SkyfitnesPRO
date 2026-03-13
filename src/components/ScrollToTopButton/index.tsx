@@ -31,7 +31,7 @@ export function ScrollToTopButton() {
       aria-label="Наверх"
       title="Наверх"
     >
-      Наверх !
+      Наверх ↑
     </button>
   )
 }

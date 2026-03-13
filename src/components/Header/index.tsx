@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../shared/auth/AuthContext'
 import { cn } from '../../shared/lib/cn'
@@ -9,10 +9,13 @@ import styles from './style.module.css'
 
 export function Header() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { status, user, logout } = useAuth()
   const { openAuthModal } = useModal()
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const showSubtitle =
+    location.pathname === '/' || location.pathname.startsWith('/courses/')
 
   useEffect(() => {
     if (!menuOpen) return
@@ -45,7 +48,9 @@ export function Header() {
             width={220}
             height={35}
           />
-          <span className={styles.subtitle}>Онлайн-тренировки для занятий дома</span>
+          {showSubtitle && (
+            <span className={styles.subtitle}>Онлайн-тренировки для занятий дома</span>
+          )}
         </NavLink>
 
         <div className={styles.actions}>

@@ -3,15 +3,12 @@ import { Button } from '../../Button'
 import styles from './style.module.css'
 
 const IconPerson = () => (
-  <svg
-    className={styles.icon}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+  <svg className={styles.icon} viewBox="0 0 240 240" fill="none" aria-hidden>
+    <circle cx="120" cy="77" r="43" fill="#FFFFFF" />
+    <path
+      d="M0 240C8 170 55 130 120 130C185 130 232 170 240 240H0Z"
+      fill="#FFFFFF"
+    />
   </svg>
 )
 
@@ -26,7 +23,9 @@ export function ProfileHeaderCard({ displayName, email, onLogout }: Props) {
     <section className={styles.card}>
       <div className={styles.layout}>
         <div className={styles.avatar}>
-          <IconPerson />
+          <div className={styles.avatarInner}>
+            <IconPerson />
+          </div>
         </div>
         <div className={styles.content}>
           <div className={styles.name}>{displayName}</div>

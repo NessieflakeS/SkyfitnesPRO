@@ -9,6 +9,7 @@ import styles from './style.module.css'
 export function CoursesPage() {
   const [courses, setCourses] = useState<ApiCourse[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const isLoading = courses === null && !error
 
   useEffect(() => {
     let cancelled = false
@@ -55,7 +56,8 @@ export function CoursesPage() {
           ? courses.map((course) => (
               <CourseCard key={course._id} course={mapApiCourseToCourse(course)} />
             ))
-          : Array.from({ length: 3 }).map((_, index) => (
+          : isLoading &&
+            Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className={styles.skeleton} />
             ))}
       </section>

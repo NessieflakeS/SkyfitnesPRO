@@ -5,7 +5,7 @@
 }
 
 .title {
-  @apply text-base font-semibold text-[#202020] sm:text-lg;
+  @apply text-2xl font-semibold leading-tight text-[#202020];
 }
 
 .card {

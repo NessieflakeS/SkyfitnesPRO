@@ -5,7 +5,7 @@
 }
 
 .title {
-  @apply text-center text-xl font-bold tracking-tight text-[#202020] sm:text-left sm:text-2xl;
+  @apply text-center text-2xl font-bold leading-tight tracking-tight text-[#202020] sm:text-left sm:text-[40px];
 }
 
 .section {
@@ -13,7 +13,7 @@
 }
 
 .sectionTitle {
-  @apply text-lg font-bold text-[#202020];
+  @apply text-2xl font-bold leading-tight text-[#202020] sm:text-[40px];
 }
 
 .error {
@@ -25,5 +25,24 @@
 }
 
 .skeleton {
-  @apply h-64 animate-pulse rounded-2xl border border-[#D9D9D9] bg-[#f7f7f7] sm:h-72 sm:rounded-[30px];
+  @apply relative h-64 w-full max-w-[343px] overflow-hidden rounded-2xl border border-[#D9D9D9] bg-[#f3f4f6] sm:h-72 sm:rounded-[30px];
+}
+
+.skeleton::after {
+  content: '';
+  @apply absolute inset-0;
+  background: linear-gradient(
+    90deg,
+    rgba(243, 244, 246, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(243, 244, 246, 0) 100%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

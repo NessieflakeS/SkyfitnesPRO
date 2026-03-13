@@ -1,6 +1,5 @@
-import type { Config } from 'jest'
-
-const config: Config = {
+/** @type {import('jest').Config} */
+module.exports = {
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(ts|tsx)$': [
@@ -11,8 +10,9 @@ const config: Config = {
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js'],
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': '<rootDir>/src/test/styleMock.js',
+  },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testMatch: ['<rootDir>/src/**/*.test.(ts|tsx)'],
 }
-
-export default config

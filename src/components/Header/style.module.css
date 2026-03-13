@@ -1,7 +1,7 @@
 @reference 'tailwindcss';
 
 .root {
-  @apply sticky top-0 z-50 border-b border-[#D9D9D9] bg-white/95 backdrop-blur;
+  @apply sticky top-0 z-50 bg-[#fafafa];
 }
 
 .container {
@@ -65,5 +65,5 @@
 }
 
 .loginButton {
-  @apply inline-flex items-center rounded-[46px] bg-[#BCEC30] px-4 py-2.5 text-base font-normal text-black transition-colors hover:bg-[#99D100] sm:px-6 sm:py-4 sm:text-[18px];
+  @apply inline-flex h-[36px] w-[83px] items-center justify-center rounded-[46px] bg-[#BCEC30] text-base font-normal text-black transition-colors hover:bg-[#99D100] sm:h-[52px] sm:w-[103px] sm:text-[18px];
 }

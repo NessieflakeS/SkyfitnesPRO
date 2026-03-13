@@ -119,6 +119,8 @@ export function CoursePage() {
   const fittingCards = mapped.fitting.slice(0, 3)
   const ctaBullets = mapped.fitting.slice(3)
   const bannerColor = getCourseBannerColor(mapped.title)
+  const compactTabletFittingText =
+    mapped.title.toLowerCase() === 'бодифлекс' || mapped.title.toLowerCase() === 'фитнес'
 
   return (
     <div className={styles.page}>
@@ -140,7 +142,10 @@ export function CoursePage() {
         </div>
       </section>
 
-      <FittingSection items={fittingCards} />
+      <FittingSection
+        items={fittingCards}
+        compactTabletText={compactTabletFittingText}
+      />
 
       <div className={styles.ctaBlock}>
         <DirectionsSection directions={mapped.directions} />

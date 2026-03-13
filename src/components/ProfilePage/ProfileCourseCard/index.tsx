@@ -1,6 +1,4 @@
 import { getCourseCardImagePath } from '../../../shared/config/courseImages'
-import { cn } from '../../../shared/lib/cn'
-import { getCourseBannerColor } from '../../../shared/mappers/courseMapper'
 import { Button } from '../../Button'
 import { RemoveCourseButton } from '../RemoveCourseButton'
 
@@ -8,40 +6,6 @@ import styles from './style.module.css'
 
 import type { ApiCourse } from '../../../shared/api/courses'
 import type { CourseProgress } from '../../../shared/api/workouts'
-
-const IconCalendar = () => (
-  <svg
-    className={styles.icon}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-    <line x1="16" y1="2" x2="16" y2="6" />
-    <line x1="8" y1="2" x2="8" y2="6" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-)
-
-const IconClock = () => (
-  <svg
-    className={styles.icon}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <polyline points="12 6 12 12 16 14" />
-  </svg>
-)
-
-const IconSignal = () => (
-  <svg className={styles.icon} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M2 20h4V10H2v10zm6 0h4V4H8v16zm6 0h4v-7h-4v7zm6 0h4V2h-4v18z" />
-  </svg>
-)
 
 type Props = {
   course: ApiCourse
@@ -85,10 +49,7 @@ export function ProfileCourseCard({
   return (
     <article className={styles.card}>
       <div className={styles.imageWrap}>
-        <div
-          className={cn(styles.imageFallback, getCourseBannerColor(course.nameRU))}
-          aria-hidden
-        />
+        <div className={styles.imageFallback} aria-hidden />
         <img
           key={course._id}
           src={getCourseCardImagePath(course.nameRU)}
@@ -111,16 +72,16 @@ export function ProfileCourseCard({
         <h3 className={styles.title}>{course.nameRU}</h3>
         <div className={styles.chips}>
           <span className={styles.chip}>
-            <IconCalendar />
+            <img src="/Icon_calendar.svg" alt="" className={styles.icon} aria-hidden />
             {course.durationInDays} дней
           </span>
           <span className={styles.chip}>
-            <IconClock />
+            <img src="/Icon_clock.svg" alt="" className={styles.icon} aria-hidden />
             {course.dailyDurationInMinutes.from}–{course.dailyDurationInMinutes.to}{' '}
             мин/день
           </span>
           <span className={styles.chip}>
-            <IconSignal />
+            <img src="/Group_signal.png" alt="" className={styles.icon} aria-hidden />
             {course.difficulty}
           </span>
         </div>

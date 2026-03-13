@@ -9,7 +9,7 @@
 }
 
 .heroTitle {
-  @apply max-w-[947px] text-2xl font-medium leading-tight text-[#202020] sm:text-4xl md:text-5xl lg:text-[56px] lg:font-medium lg:text-black;
+  @apply max-w-[947px] text-[32px] font-medium leading-tight text-[#202020] sm:text-4xl md:text-5xl lg:text-[56px] lg:font-medium lg:text-black;
 }
 
 .heroLine {
@@ -17,11 +17,11 @@
 }
 
 .heroLineNoWrap {
-  @apply block whitespace-nowrap;
+  @apply block sm:whitespace-nowrap;
 }
 
 .heroBadgeWrap {
-  @apply relative hidden w-full shrink-0 sm:block sm:w-auto;
+  @apply relative hidden w-full shrink-0 lg:block lg:w-auto;
 }
 
 .heroBadge {
@@ -45,5 +45,24 @@
 }
 
 .skeleton {
-  @apply h-52 animate-pulse rounded-[30px] border border-[#D9D9D9] bg-[#f7f7f7];
+  @apply relative h-[492px] w-full max-w-[343px] overflow-hidden rounded-2xl border border-[#D9D9D9] bg-[#f3f4f6] sm:rounded-[30px];
+}
+
+.skeleton::after {
+  content: '';
+  @apply absolute inset-0;
+  background: linear-gradient(
+    90deg,
+    rgba(243, 244, 246, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(243, 244, 246, 0) 100%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

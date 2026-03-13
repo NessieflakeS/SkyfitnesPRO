@@ -23,11 +23,16 @@ export function ProgressModal({
   noCourseId,
 }: Props) {
   const [progress, setProgress] = useState<number[]>(initialProgress)
+  const [inputValues, setInputValues] = useState<string[]>(
+    initialProgress.map((value) => (value > 0 ? String(value) : '')),
+  )
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   const handleChange = (index: number, value: string) => {
-    const numeric = Number(value.replace(/\D/g, ''))
+    const cleaned = value.replace(/\D/g, '')
+    setInputValues((prev) => prev.map((item, idx) => (idx === index ? cleaned : item)))
+    const numeric = cleaned === '' ? 0 : Number(cleaned)
     if (Number.isNaN(numeric)) return
     setProgress((prev) => prev.map((item, idx) => (idx === index ? numeric : item)))
   }
@@ -98,7 +103,8 @@ export function ProgressModal({
                     type="number"
                     min={0}
                     className={styles.input}
-                    value={progress[idx] ?? 0}
+                    value={inputValues[idx] ?? ''}
+                    placeholder="Введите число"
                     onChange={(e) => handleChange(idx, e.target.value)}
                   />
                 </div>
