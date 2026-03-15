@@ -37,5 +37,5 @@
 }
 
 .visualSlot {
-  @apply relative z-[20] hidden shrink-0 flex-[3] overflow-visible sm:block sm:min-h-[300px] md:min-h-[340px];
+  @apply relative z-[20] hidden shrink-0 flex-[3] overflow-visible sm:block;
 }

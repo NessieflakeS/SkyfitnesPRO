@@ -45,7 +45,7 @@
 }
 
 .skeleton {
-  @apply relative h-[492px] w-full max-w-[343px] overflow-hidden rounded-2xl border border-[#D9D9D9] bg-[#f3f4f6] sm:rounded-[30px];
+  @apply relative aspect-square w-full max-w-[343px] overflow-hidden rounded-2xl border border-[#D9D9D9] bg-[#f3f4f6] sm:rounded-[30px];
 }
 
 .skeleton::after {

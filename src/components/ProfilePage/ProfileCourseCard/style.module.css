@@ -1,7 +1,7 @@
 @reference 'tailwindcss';
 
 .card {
-  @apply relative flex min-h-[492px] w-full max-w-[343px] flex-col overflow-hidden rounded-[30px] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)];
+  @apply relative flex w-full max-w-[343px] flex-col overflow-hidden rounded-[30px] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)] transition-shadow hover:shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.18)];
 }
 
 .imageWrap {

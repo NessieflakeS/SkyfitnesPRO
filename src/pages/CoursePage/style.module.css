@@ -17,7 +17,7 @@
 }
 
 .bannerCard {
-  @apply relative flex h-[389px] w-full max-w-[343px] items-center justify-center overflow-hidden rounded-2xl sm:h-[420px] sm:max-w-[1160px] sm:rounded-[30px] lg:h-[310px];
+  @apply relative flex aspect-[343/389] w-full max-w-[343px] items-center justify-center overflow-hidden rounded-2xl sm:aspect-[1160/420] sm:max-w-[1160px] sm:rounded-[30px] lg:aspect-[1160/310];
 }
 
 .bannerTitle {

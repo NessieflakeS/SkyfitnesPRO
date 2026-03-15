@@ -1,7 +1,7 @@
 @reference 'tailwindcss';
 
 .card {
-  @apply mx-auto w-full max-w-[1160px] min-h-[257px] rounded-[30px] bg-white px-6 py-6 sm:px-8 sm:py-7;
+  @apply mx-auto w-full max-w-[1160px] rounded-[30px] bg-white px-6 py-6 sm:px-8 sm:py-7;
 }
 
 .layout {
