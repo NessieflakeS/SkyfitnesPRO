@@ -1,0 +1,45 @@
+@reference 'tailwindcss';
+
+.loading {
+  @apply space-y-4;
+}
+
+.loadingBlock {
+  @apply h-40 animate-pulse rounded-[30px] bg-[#f7f7f7];
+}
+
+.page {
+  @apply space-y-8 sm:space-y-10;
+}
+
+.bannerSection {
+  @apply flex justify-center;
+}
+
+.bannerCard {
+  @apply relative flex aspect-[343/389] w-full max-w-[343px] items-center justify-center overflow-hidden rounded-2xl sm:aspect-[1160/420] sm:max-w-[1160px] sm:rounded-[30px] lg:aspect-[1160/310];
+}
+
+.bannerTitle {
+  @apply absolute left-4 top-4 z-10 hidden text-[60px] font-bold leading-tight tracking-tight text-white sm:left-6 sm:top-6 sm:block;
+}
+
+.mobileCardImage {
+  @apply absolute inset-0 h-full w-full object-cover object-center;
+}
+
+.desktopBannerImage {
+  @apply absolute bottom-0 right-0 h-full w-auto max-w-none object-contain object-right-bottom;
+}
+
+.ctaBlock {
+  @apply relative overflow-visible pb-8 sm:pb-0;
+}
+
+.ctaRunnerScope {
+  @apply relative;
+}
+
+.runnerWrap {
+  @apply pointer-events-none absolute right-[-18%] top-[-220px] z-[12] h-[300px] w-[74%] min-w-[200px] overflow-visible sm:bottom-[7px] sm:right-[2%] sm:top-auto sm:z-[17] sm:h-[390px] sm:w-[46%] sm:overflow-visible;
+}

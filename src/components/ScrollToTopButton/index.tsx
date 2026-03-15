@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { cn } from '../../shared/lib/cn'
 
+import styles from './style.module.css'
+
 export function ScrollToTopButton() {
   const [visible, setVisible] = useState(false)
 
@@ -25,16 +27,11 @@ export function ScrollToTopButton() {
     <button
       type="button"
       onClick={onClick}
-      className={cn(
-        'fixed bottom-6 right-6 z-50 grid size-12 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-lg transition-all',
-        visible
-          ? 'translate-y-0 opacity-100'
-          : 'pointer-events-none translate-y-2 opacity-0',
-      )}
+      className={cn(styles.button, visible ? styles.visible : styles.hidden)}
       aria-label="Наверх"
       title="Наверх"
     >
-      ↑
+      Наверх ↑
     </button>
   )
 }

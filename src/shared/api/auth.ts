@@ -31,5 +31,6 @@ export async function register(email: string, password: string) {
 }
 
 export async function getCurrentUser(token: AuthToken) {
-  return apiClient.get<AuthUser>('/users/me', token)
+  const data = await apiClient.get<{ user: AuthUser }>('/users/me', token)
+  return data.user
 }

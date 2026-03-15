@@ -1,21 +1,31 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Button } from '../../components/Button'
+import { ProfileCourseCard, ProfileHeaderCard } from '../../components/ProfilePage'
+import { WorkoutSelectionModal } from '../../components/WorkoutSelectionModal'
 import {
   fetchCourses,
   removeCourseForUser,
+  resetCourseProgress,
   type ApiCourse,
 } from '../../shared/api/courses'
+import { fetchCourseProgress, type CourseProgress } from '../../shared/api/workouts'
 import { useAuth } from '../../shared/auth/AuthContext'
+
+import styles from './style.module.css'
 
 export function ProfilePage() {
   const navigate = useNavigate()
-  const { status, user, token } = useAuth()
+  const { status, user, token, logout } = useAuth()
   const [courses, setCourses] = useState<ApiCourse[]>([])
+  const [progressMap, setProgressMap] = useState<Partial<Record<string, CourseProgress>>>(
+    {},
+  )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [removingId, setRemovingId] = useState<string | null>(null)
+  const [resettingId, setResettingId] = useState<string | null>(null)
+  const [workoutModalCourse, setWorkoutModalCourse] = useState<ApiCourse | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -25,16 +35,19 @@ export function ProfilePage() {
   }, [status, navigate])
 
   useEffect(() => {
-    if (!user) return
+    if (!user || !token) return
 
     let cancelled = false
     setLoading(true)
     setError(null)
 
-    fetchCourses()
+    fetchCourses(token)
       .then((all) => {
         if (cancelled) return
-        const owned = all.filter((c) => user.selectedCourses.includes(c._id))
+        const owned = all.filter(
+          (c) =>
+            Array.isArray(user.selectedCourses) && user.selectedCourses.includes(c._id),
+        )
         setCourses(owned)
         setLoading(false)
       })
@@ -47,7 +60,29 @@ export function ProfilePage() {
     return () => {
       cancelled = true
     }
-  }, [user])
+  }, [user, token])
+
+  useEffect(() => {
+    if (!token || courses.length === 0) return
+    let cancelled = false
+    const loadProgress = async () => {
+      const next: Partial<Record<string, CourseProgress>> = {}
+      for (const course of courses) {
+        if (cancelled) break
+        try {
+          const p = await fetchCourseProgress(course._id, token)
+          next[course._id] = p
+        } catch {
+          continue
+        }
+      }
+      if (!cancelled) setProgressMap((prev) => ({ ...prev, ...next }))
+    }
+    void loadProgress()
+    return () => {
+      cancelled = true
+    }
+  }, [token, courses])
 
   const handleRemove = async (courseId: string) => {
     if (!token) return
@@ -62,87 +97,76 @@ export function ProfilePage() {
     }
   }
 
-  if (!user) {
-    return null
+  const handleResetProgress = async (courseId: string) => {
+    if (!token) return
+    setResettingId(courseId)
+    try {
+      await resetCourseProgress(courseId, token)
+      setProgressMap((prev) => ({
+        ...prev,
+        [courseId]: { courseId, workoutsProgress: [] },
+      }))
+    } catch {
+      setError('Не удалось сбросить прогресс')
+    } finally {
+      setResettingId(null)
+    }
   }
 
+  const handleLogout = useCallback(() => {
+    logout()
+    void navigate('/')
+  }, [logout, navigate])
+
+  if (!user) return null
+
+  const displayName = user.email.split('@')[0] || 'Пользователь'
+
   return (
-    <div className="space-y-8">
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Профиль</h1>
-            <div className="text-sm text-slate-600">{user.email}</div>
-          </div>
-        </div>
-      </section>
+    <div className={styles.page}>
+      <h1 className={styles.title}>Профиль</h1>
 
-      <section className="space-y-4">
-        <div className="flex items-end justify-between gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Мои курсы</h2>
-          <div className="text-xs text-slate-500">
-            {loading ? 'Загрузка…' : `${String(courses.length)} шт.`}
-          </div>
-        </div>
+      <ProfileHeaderCard
+        displayName={displayName}
+        email={user.email}
+        onLogout={handleLogout}
+      />
 
-        {error && (
-          <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-            {error}
-          </div>
-        )}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Мои курсы</h2>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {error && <div className={styles.error}>{error}</div>}
+
+        <div className={styles.grid}>
           {loading &&
             Array.from({ length: 3 }).map((_, index) => (
-              <div
-                key={index}
-                className="h-48 animate-pulse rounded-2xl border border-slate-200 bg-slate-100"
-              />
+              <div key={index} className={styles.skeleton} />
             ))}
 
           {!loading &&
-            courses.map((course) => (
-              <article
-                key={course._id}
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-              >
-                <div
-                  className="h-24 bg-gradient-to-br from-slate-900 to-indigo-700"
-                  aria-hidden
+            courses.map((course) => {
+              return (
+                <ProfileCourseCard
+                  key={course._id}
+                  course={course}
+                  progress={progressMap[course._id]}
+                  removing={removingId === course._id}
+                  resetting={resettingId === course._id}
+                  onRemove={handleRemove}
+                  onResetProgress={handleResetProgress}
+                  onOpenWorkoutModal={setWorkoutModalCourse}
                 />
-                <div className="space-y-3 p-5">
-                  <div className="text-sm font-semibold text-slate-900">
-                    {course.nameRU}
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Тренировок: {course.workouts.length}
-                  </div>
-
-                  {course.workouts.length > 0 ? (
-                    <Link
-                      to={`/workouts/${course.workouts[0]}`}
-                      className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
-                    >
-                      Начать тренировку
-                    </Link>
-                  ) : (
-                    <Button disabled fullWidth>
-                      Начать тренировку
-                    </Button>
-                  )}
-
-                  <Button
-                    variant="secondary"
-                    disabled={removingId === course._id}
-                    fullWidth
-                    onClick={() => void handleRemove(course._id)}
-                  >
-                    {removingId === course._id ? 'Удаление…' : 'Удалить курс'}
-                  </Button>
-                </div>
-              </article>
-            ))}
+              )
+            })}
         </div>
+
+        {workoutModalCourse && token && (
+          <WorkoutSelectionModal
+            course={workoutModalCourse}
+            token={token}
+            onClose={() => setWorkoutModalCourse(null)}
+          />
+        )}
       </section>
     </div>
   )

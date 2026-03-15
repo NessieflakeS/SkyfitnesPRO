@@ -1,0 +1,5 @@
+@reference 'tailwindcss';
+
+.footer {
+  @apply bg-[#fafafa];
+}

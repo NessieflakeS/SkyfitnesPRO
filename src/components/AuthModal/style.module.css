@@ -1,0 +1,77 @@
+@reference 'tailwindcss';
+
+.overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4;
+}
+
+.modal {
+  @apply relative w-full max-w-md overflow-hidden rounded-[30px] border border-[#D9D9D9] bg-white shadow-[0px_4px_67px_-12px_rgba(0,0,0,0.13)];
+}
+
+.closeButton {
+  @apply absolute right-3 top-3 text-[#202020]/50 hover:text-[#202020];
+}
+
+.closeIcon {
+  @apply text-xl leading-none;
+}
+
+.content {
+  @apply flex flex-col items-center px-8 pb-6 pt-8 sm:px-10 sm:pb-8 sm:pt-10;
+}
+
+.logoWrap {
+  @apply mb-6 flex items-center justify-center sm:mb-8;
+}
+
+.logo {
+  @apply h-9 w-auto;
+}
+
+.form {
+  @apply flex w-full flex-col items-stretch gap-4;
+}
+
+.field {
+  @apply space-y-2;
+}
+
+.label {
+  @apply text-sm font-medium text-[#202020];
+}
+
+.input {
+  @apply h-11 w-full rounded-xl border border-[#D9D9D9] bg-white px-3 text-sm text-[#202020] outline-none focus:border-[#BCEC30] focus:ring-1 focus:ring-[#BCEC30];
+}
+
+.error {
+  @apply rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700;
+}
+
+.actions {
+  @apply flex flex-col gap-3 pt-1;
+}
+
+.submitButton {
+  @apply rounded-[28px] border-none px-5 py-3.5 text-sm font-medium transition-colors;
+}
+
+.submitButtonActive {
+  @apply bg-[#BCEC30] text-black hover:bg-[#c8f050] active:bg-black active:text-white;
+}
+
+.submitButtonDisabled {
+  @apply cursor-not-allowed bg-[#ebebeb] text-[#202020]/40 hover:bg-[#ebebeb] active:bg-[#ebebeb] active:text-[#202020]/40;
+}
+
+.switchButton {
+  @apply rounded-[28px] border-2 px-5 py-3.5 text-sm font-medium transition-colors;
+}
+
+.switchButtonActive {
+  @apply border-black bg-white text-black hover:bg-[#f5f5f5] active:bg-[#e5e5e5];
+}
+
+.switchButtonDisabled {
+  @apply cursor-not-allowed border-[#D9D9D9] bg-white text-[#202020]/40 hover:bg-white active:bg-white;
+}

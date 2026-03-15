@@ -1,0 +1,29 @@
+@reference 'tailwindcss';
+
+.section {
+  @apply relative z-[2] space-y-4;
+}
+
+.title {
+  @apply text-2xl font-semibold leading-tight text-[#202020];
+}
+
+.card {
+  @apply w-full max-w-[343px] rounded-2xl bg-[#BCEC30] px-4 py-5 sm:max-w-[1160px] sm:rounded-[30px] sm:px-6 sm:py-6;
+}
+
+.grid {
+  @apply grid w-full grid-cols-1 content-start gap-x-16 gap-y-6 sm:grid-cols-3 sm:gap-x-24 sm:gap-y-4;
+}
+
+.item {
+  @apply flex items-center justify-start gap-2;
+}
+
+.star {
+  @apply h-4 w-4 shrink-0 object-contain sm:h-5 sm:w-5;
+}
+
+.name {
+  @apply text-base font-medium text-[#202020] sm:text-lg;
+}

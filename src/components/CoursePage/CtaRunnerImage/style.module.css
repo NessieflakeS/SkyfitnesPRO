@@ -1,0 +1,17 @@
+@reference 'tailwindcss';
+
+.container {
+  @apply absolute inset-0 z-[12];
+}
+
+.stripeMobile {
+  @apply absolute left-[16%] top-[27%] z-[1] h-8 w-auto -rotate-[22deg] opacity-90 sm:hidden;
+}
+
+.stripeDesktop {
+  @apply absolute left-[18%] top-[7%] z-[1] hidden h-10 w-auto -rotate-[22deg] opacity-90 sm:block;
+}
+
+.runner {
+  @apply absolute bottom-0 right-0 z-[2] h-auto w-[100%] max-w-none object-contain object-right-bottom sm:w-[92%];
+}

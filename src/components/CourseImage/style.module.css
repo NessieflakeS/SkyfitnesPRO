@@ -1,0 +1,13 @@
+@reference 'tailwindcss';
+
+.root {
+  @apply relative overflow-hidden;
+}
+
+.fallback {
+  @apply absolute inset-0;
+}
+
+.image {
+  @apply absolute inset-0 h-full w-full object-cover;
+}

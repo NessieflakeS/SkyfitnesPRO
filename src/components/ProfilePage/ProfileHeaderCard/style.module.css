@@ -1,0 +1,41 @@
+@reference 'tailwindcss';
+
+.card {
+  @apply mx-auto w-full max-w-[1160px] rounded-[30px] bg-white px-6 py-6 sm:px-8 sm:py-7;
+}
+
+.layout {
+  @apply flex flex-col items-center gap-4 sm:flex-row sm:items-start sm:gap-7;
+}
+
+.avatar {
+  @apply flex size-[220px] shrink-0 items-center justify-center rounded-[30px] bg-white p-5;
+}
+
+.avatarInner {
+  @apply h-full w-full overflow-hidden rounded-[20px] bg-[#C8C8C8];
+}
+
+.icon {
+  @apply h-full w-full;
+}
+
+.content {
+  @apply min-w-0 w-full flex-1 space-y-2 text-left;
+}
+
+.name {
+  @apply truncate text-2xl leading-tight font-bold text-[#202020] sm:text-[40px];
+}
+
+.email {
+  @apply truncate text-base text-[#202020];
+}
+
+.actions {
+  @apply w-full pt-3;
+}
+
+.logoutButton {
+  @apply h-12 w-full rounded-[46px] border border-[#202020] bg-transparent px-8 py-2 text-[18px] text-[#202020] hover:bg-white/35 sm:h-[54px] sm:w-auto sm:min-w-[190px] sm:text-[18px];
+}

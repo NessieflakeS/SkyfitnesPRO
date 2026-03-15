@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import {
   createContext,
   useCallback,
@@ -10,7 +9,9 @@ import {
 } from 'react'
 
 import { getCurrentUser, login as apiLogin, register as apiRegister } from '../api/auth'
+
 import { readStoredAuth, writeStoredAuth } from './storage'
+
 import type { ApiError } from '../api/client'
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated'
@@ -24,9 +25,10 @@ type AuthContextValue = {
   status: AuthStatus
   user: AuthUser | null
   token: string | null
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<string | null>
+  register: (email: string, password: string) => Promise<string | null>
   logout: () => void
+  refreshUser: () => Promise<void>
   lastError: string | null
   clearError: () => void
 }
@@ -76,7 +78,7 @@ export function AuthProvider({ children }: Props) {
   }, [])
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string): Promise<string | null> => {
       setLastError(null)
       setStatus('loading')
       try {
@@ -86,6 +88,7 @@ export function AuthProvider({ children }: Props) {
         const current = await getCurrentUser(newToken)
         setUser(current)
         setStatus('authenticated')
+        return newToken
       } catch (error) {
         handleError(error)
         setUser(null)
@@ -99,18 +102,18 @@ export function AuthProvider({ children }: Props) {
   )
 
   const register = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string): Promise<string | null> => {
       setLastError(null)
       setStatus('loading')
       try {
         await apiRegister(email, password)
-        // После регистрации сразу пробуем логин с теми же данными
         const newToken = await apiLogin(email, password)
         writeStoredAuth({ token: newToken })
         setToken(newToken)
         const current = await getCurrentUser(newToken)
         setUser(current)
         setStatus('authenticated')
+        return newToken
       } catch (error) {
         handleError(error)
         setStatus('unauthenticated')
@@ -131,6 +134,20 @@ export function AuthProvider({ children }: Props) {
     setLastError(null)
   }, [])
 
+  const refreshUser = useCallback(async () => {
+    const t = readStoredAuth()?.token
+    if (!t) return
+    try {
+      const current = await getCurrentUser(t)
+      setUser(current)
+    } catch {
+      setUser(null)
+      setToken(null)
+      writeStoredAuth(null)
+      setStatus('unauthenticated')
+    }
+  }, [])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -139,10 +156,11 @@ export function AuthProvider({ children }: Props) {
       login,
       register,
       logout,
+      refreshUser,
       lastError,
       clearError,
     }),
-    [status, user, token, login, register, logout, lastError, clearError],
+    [status, user, token, login, register, logout, refreshUser, lastError, clearError],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -7,8 +7,9 @@ body {
 
 body {
   margin: 0;
-  color: rgb(15 23 42);
-  background: rgb(248 250 252);
+  font-family: 'Roboto', sans-serif;
+  color: #202020;
+  background: #fafafa;
 }
 
 #root {

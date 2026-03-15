@@ -23,16 +23,16 @@ export type ApiWorkoutShort = {
   exercises: unknown[]
 }
 
-export function fetchCourses() {
-  return apiClient.get<ApiCourse[]>('/courses')
+export function fetchCourses(token?: string | null) {
+  return apiClient.get<ApiCourse[]>('/courses', token)
 }
 
-export function fetchCourse(courseId: string) {
-  return apiClient.get<ApiCourse>(`/courses/${courseId}`)
+export function fetchCourse(courseId: string, token?: string | null) {
+  return apiClient.get<ApiCourse>(`/courses/${courseId}`, token)
 }
 
-export function fetchCourseWorkouts(courseId: string) {
-  return apiClient.get<ApiWorkoutShort[]>(`/courses/${courseId}/workouts`)
+export function fetchCourseWorkouts(courseId: string, token?: string | null) {
+  return apiClient.get<ApiWorkoutShort[]>(`/courses/${courseId}/workouts`, token)
 }
 
 export function addCourseForUser(courseId: string, token: string) {

@@ -1,9 +1,97 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { addCourseForUser } from '../../shared/api/courses'
+import { useAuth } from '../../shared/auth/AuthContext'
+import { getCourseCardImagePath } from '../../shared/config/courseImages'
+import { cn } from '../../shared/lib/cn'
 import { getCourseLevelLabel } from '../../shared/mock/courses'
-import { Button } from '../Button'
+import { useModal } from '../../shared/ui/ModalContext'
+
+import styles from './style.module.css'
 
 import type { Course } from '../../shared/types/fitness'
+
+function AddCourseButton({ courseId }: { courseId: string }) {
+  const { status, token, refreshUser } = useAuth()
+  const { openAuthModal } = useModal()
+  const [adding, setAdding] = useState(false)
+  const [feedback, setFeedback] = useState<{
+    message: string
+    variant: 'success' | 'info' | 'error'
+  } | null>(null)
+  const timeoutRef = useRef<number | null>(null)
+
+  const showFeedback = (message: string, variant: 'success' | 'info' | 'error') => {
+    setFeedback({ message, variant })
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      setFeedback(null)
+      timeoutRef.current = null
+    }, 2200)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (status !== 'authenticated' || !token) {
+      openAuthModal(courseId)
+      return
+    }
+    setAdding(true)
+    addCourseForUser(courseId, token)
+      .then(() => {
+        showFeedback('Курс добавлен', 'success')
+        return refreshUser()
+      })
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : ''
+        if (msg.includes('Курс уже был добавлен')) {
+          showFeedback('Уже добавлен', 'info')
+          void refreshUser()
+          return
+        }
+        showFeedback('Ошибка добавления', 'error')
+      })
+      .finally(() => setAdding(false))
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={adding}
+      className={styles.addButton}
+      title="Добавить курс"
+      aria-label="Добавить курс"
+    >
+      <img src="/Icon_plus.svg" alt="" className={styles.addIcon} aria-hidden />
+      {feedback && (
+        <span
+          className={cn(
+            styles.inlineToast,
+            feedback.variant === 'success' && styles.inlineToastSuccess,
+            feedback.variant === 'info' && styles.inlineToastInfo,
+            feedback.variant === 'error' && styles.inlineToastError,
+          )}
+          role="status"
+        >
+          {feedback.message}
+        </span>
+      )}
+    </button>
+  )
+}
 
 type Props = {
   course: Course
@@ -11,45 +99,39 @@ type Props = {
 
 export function CourseCard({ course }: Props) {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-      <div
-        className={`h-28 bg-gradient-to-br ${course.coverColor} sm:h-32`}
-        aria-hidden
-      />
-      <div className="space-y-4 p-5">
-        <div className="space-y-1">
-          <h3 className="text-base font-semibold text-slate-900">{course.title}</h3>
-          <div className="text-xs text-slate-500">
-            {getCourseLevelLabel(course.level)} • {course.durationDays} дней •{' '}
-            {course.dailyMinutesFrom}-{course.dailyMinutesTo} мин/день
+    <article className={styles.card}>
+      <Link to={`/courses/${course.id}`} className={styles.link}>
+        <div className={styles.imageWrap}>
+          <div className={styles.imageFallback} aria-hidden />
+          <img
+            key={course.id}
+            src={getCourseCardImagePath(course.title)}
+            alt={course.title}
+            className={styles.coverImage}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+        </div>
+        <div className={styles.content}>
+          <h3 className={styles.title}>{course.title}</h3>
+          <div className={styles.metaList}>
+            <span className={styles.metaChip}>
+              <img src="/Icon_calendar.svg" alt="" className={styles.icon} aria-hidden />
+              {course.durationDays} дней
+            </span>
+            <span className={styles.metaChip}>
+              <img src="/Icon_clock.svg" alt="" className={styles.icon} aria-hidden />
+              {course.dailyMinutesFrom}-{course.dailyMinutesTo} мин/день
+            </span>
+            <span className={styles.metaChip}>
+              <img src="/Group_signal.png" alt="" className={styles.icon} aria-hidden />
+              {getCourseLevelLabel(course.level)}
+            </span>
           </div>
         </div>
-
-        <p className="line-clamp-3 text-sm text-slate-700">{course.description}</p>
-
-        <div className="flex flex-wrap gap-2">
-          {course.directions.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link
-            to={`/courses/${course.id}`}
-            className="inline-flex w-full items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-slate-800 sm:w-auto"
-          >
-            Подробнее
-          </Link>
-          <Button variant="secondary" disabled className="w-full sm:w-auto">
-            Добавить курс
-          </Button>
-        </div>
-      </div>
+      </Link>
+      <AddCourseButton courseId={course.id} />
     </article>
   )
 }

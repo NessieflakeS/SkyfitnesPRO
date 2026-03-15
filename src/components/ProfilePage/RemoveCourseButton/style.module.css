@@ -1,0 +1,17 @@
+@reference 'tailwindcss';
+
+.container {
+  @apply relative;
+}
+
+.button {
+  @apply flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-[#202020] shadow hover:bg-white disabled:opacity-50 sm:size-9;
+}
+
+.icon {
+  @apply size-4;
+}
+
+.tooltip {
+  @apply absolute right-0 top-full z-20 mt-1 whitespace-nowrap rounded bg-[#202020] px-2 py-1 text-xs text-white;
+}

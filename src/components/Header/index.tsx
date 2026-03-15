@@ -1,88 +1,143 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../shared/auth/AuthContext'
 import { cn } from '../../shared/lib/cn'
+import { useModal } from '../../shared/ui/ModalContext'
 
-const linkBase =
-  'inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors'
+import styles from './style.module.css'
 
 export function Header() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { status, user, logout } = useAuth()
+  const { openAuthModal } = useModal()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const showSubtitle =
+    location.pathname === '/' || location.pathname.startsWith('/courses/')
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [menuOpen])
 
   const handleLogout = () => {
+    setMenuOpen(false)
     logout()
     void navigate('/')
   }
 
+  const displayName =
+    status === 'authenticated' && user ? user.email.split('@')[0] || 'Пользователь' : ''
+
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
-        <NavLink to="/" className="flex items-center gap-2">
-          <div className="grid size-9 place-items-center rounded-xl bg-slate-900 text-white">
-            SF
-          </div>
-          <div className="leading-tight">
-            <div className="text-sm font-semibold">SkyFitnessPro</div>
-            <div className="text-xs text-slate-500">тренировки онлайн</div>
-          </div>
+    <header className={styles.root}>
+      <div className={styles.container}>
+        <NavLink to="/" className={styles.brandLink} title="На главную">
+          <img
+            src="/logo.png"
+            alt="SkyFitnessPro"
+            className={styles.logo}
+            width={220}
+            height={35}
+          />
+          {showSubtitle && (
+            <span className={styles.subtitle}>Онлайн-тренировки для занятий дома</span>
+          )}
         </NavLink>
 
-        <nav className="flex items-center gap-1">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              cn(
-                linkBase,
-                isActive
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100',
-              )
-            }
-            end
-          >
-            Курсы
-          </NavLink>
-          <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              cn(
-                linkBase,
-                isActive
-                  ? 'bg-slate-900 text-white'
-                  : 'text-slate-700 hover:bg-slate-100',
-              )
-            }
-          >
-            Профиль
-          </NavLink>
+        <div className={styles.actions}>
           {status === 'authenticated' && user ? (
-            <div className="flex items-center gap-2">
-              <div className="hidden text-xs text-slate-500 sm:block">{user.email}</div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className={cn(linkBase, 'text-slate-700 hover:bg-slate-100')}
-              >
-                Выйти
-              </button>
+            <div className={styles.menuWrap} ref={menuRef}>
+              {menuOpen ? (
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  className={styles.menuButton}
+                  aria-expanded="true"
+                  aria-haspopup="menu"
+                >
+                  <div className={styles.avatar} aria-hidden>
+                    <span className={styles.avatarLetter}>
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className={styles.displayName}>{displayName}</span>
+                  <span className={cn(styles.chevron, styles.chevronOpen)} aria-hidden>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(true)}
+                  className={styles.menuButton}
+                  aria-expanded="false"
+                  aria-haspopup="menu"
+                >
+                  <div className={styles.avatar} aria-hidden>
+                    <span className={styles.avatarLetter}>
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className={styles.displayName}>{displayName}</span>
+                  <span className={styles.chevron} aria-hidden>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </button>
+              )}
+              {menuOpen && (
+                <div role="menu" className={styles.menu}>
+                  <NavLink
+                    to="/profile"
+                    role="menuitem"
+                    className={styles.menuItemLink}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Профиль
+                  </NavLink>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className={styles.menuItemButton}
+                    onClick={handleLogout}
+                  >
+                    Выйти
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
-            <NavLink
-              to="/auth"
-              className={({ isActive }) =>
-                cn(
-                  linkBase,
-                  isActive
-                    ? 'bg-slate-900 text-white'
-                    : 'text-slate-700 hover:bg-slate-100',
-                )
-              }
+            <button
+              type="button"
+              onClick={() => openAuthModal()}
+              className={styles.loginButton}
             >
               Войти
-            </NavLink>
+            </button>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   )

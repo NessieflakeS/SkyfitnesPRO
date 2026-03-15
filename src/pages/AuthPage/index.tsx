@@ -5,6 +5,8 @@ import { Button } from '../../components/Button'
 import { useAuth } from '../../shared/auth/AuthContext'
 import { cn } from '../../shared/lib/cn'
 
+import styles from './style.module.css'
+
 type Mode = 'login' | 'register'
 
 export function AuthPage() {
@@ -71,21 +73,21 @@ export function AuthPage() {
 
       void navigate('/', { replace: true })
     } catch {
-      // ошибка уже попадает в lastError
+      setLocalError(mode === 'login' ? 'Ошибка входа' : 'Ошибка регистрации')
     }
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 p-6">
-          <h1 className="text-xl font-bold text-slate-900">{title}</h1>
-          <p className="mt-2 text-sm text-slate-600">
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>{title}</h1>
+          <p className={styles.subtitle}>
             Используется реальное API. Требования к паролю: минимум 6 символов, минимум 2
             спецсимвола и минимум 1 заглавная буква.
           </p>
 
-          <div className="mt-5 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
+          <div className={styles.tabs}>
             <button
               type="button"
               onClick={() => {
@@ -94,8 +96,8 @@ export function AuthPage() {
                 setLocalError(null)
               }}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
-                mode === 'login' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600',
+                styles.tabButton,
+                mode === 'login' ? styles.tabButtonActive : styles.tabButtonIdle,
               )}
             >
               Войти
@@ -108,10 +110,8 @@ export function AuthPage() {
                 setLocalError(null)
               }}
               className={cn(
-                'rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
-                mode === 'register'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600',
+                styles.tabButton,
+                mode === 'register' ? styles.tabButtonActive : styles.tabButtonIdle,
               )}
             >
               Регистрация
@@ -120,64 +120,56 @@ export function AuthPage() {
         </div>
 
         <form
-          className="space-y-4 p-6"
+          className={styles.form}
           aria-labelledby={formId}
           onSubmit={(event) => {
             void handleSubmit(event)
           }}
         >
-          <div className="space-y-2">
-            <label
-              className="text-sm font-medium text-slate-700"
-              htmlFor={`${formId}-email`}
-            >
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor={`${formId}-email`}>
               Email
             </label>
             <input
               id={`${formId}-email`}
               type="email"
               placeholder="user@example.com"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
+              className={styles.input}
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
           </div>
 
-          <div className="space-y-2">
-            <label
-              className="text-sm font-medium text-slate-700"
-              htmlFor={`${formId}-password`}
-            >
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor={`${formId}-password`}>
               Пароль
             </label>
             <input
               id={`${formId}-password`}
               type="password"
               placeholder="••••••••"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-400"
+              className={styles.input}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
           </div>
 
           {mode === 'register' && (
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
+            <div className={styles.passwordHint}>
               Пароль: не менее 6 символов, не менее двух спецсимволов и не менее одной
               заглавной буквы.
             </div>
           )}
 
           {(localError ?? lastError) && (
-            <div className="rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
-              {localError ?? lastError}
-            </div>
+            <div className={styles.error}>{localError ?? lastError}</div>
           )}
 
           <Button type="submit" fullWidth disabled={isLoading}>
-            {isLoading ? 'Секунду...' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
+            {isLoading ? 'Подождите…' : mode === 'login' ? 'Войти' : 'Зарегистрироваться'}
           </Button>
 
-          <div className="text-center text-xs text-slate-500">
+          <div className={styles.agreement}>
             Нажимая кнопку, вы соглашаетесь с условиями сервиса.
           </div>
         </form>

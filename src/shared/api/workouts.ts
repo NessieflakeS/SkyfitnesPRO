@@ -15,18 +15,18 @@ export type ApiWorkout = {
 
 export type WorkoutProgress = {
   workoutId: string
-  workoutCompleted: boolean
-  progressData: number[]
+  workoutCompleted?: boolean
+  progressData?: number[]
 }
 
 export type CourseProgress = {
   courseId: string
-  courseCompleted: boolean
-  workoutsProgress: WorkoutProgress[]
+  courseCompleted?: boolean
+  workoutsProgress?: WorkoutProgress[]
 }
 
-export function fetchWorkout(workoutId: string) {
-  return apiClient.get<ApiWorkout>(`/workouts/${workoutId}`)
+export function fetchWorkout(workoutId: string, token?: string | null) {
+  return apiClient.get<ApiWorkout>(`/workouts/${workoutId}`, token)
 }
 
 export function fetchCourseProgress(courseId: string, token: string) {

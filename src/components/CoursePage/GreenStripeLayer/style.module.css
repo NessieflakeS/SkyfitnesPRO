@@ -1,0 +1,29 @@
+@reference 'tailwindcss';
+
+.container {
+  @apply pointer-events-none absolute inset-0 z-[8] sm:overflow-hidden;
+}
+
+.stripe {
+  @apply absolute right-[15%] h-auto w-[162%] max-w-none object-contain object-right-top opacity-95 sm:right-[2%] sm:top-[26%] sm:w-[90%];
+}
+
+.mobileTopStep {
+  @apply top-[100px];
+}
+
+.mobileTopYoga {
+  @apply top-[100px];
+}
+
+.mobileTopStretching {
+  @apply top-[100px];
+}
+
+.mobileTopBodyflex {
+  @apply top-[100px];
+}
+
+.mobileTopFitness {
+  @apply top-[100px];
+}
